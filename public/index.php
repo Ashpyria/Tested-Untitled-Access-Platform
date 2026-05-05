@@ -23,6 +23,11 @@ $titles = [
 $page_title   = $titles[$page];
 $current_page = $page;
 
+// Load model sesuai page
+if ($page === 'store') {
+    require_once __DIR__ . '/../src/backend/models/Game.php';
+}
+
 // Path ke file view
 $view_path = __DIR__ . '/../src/frontend/pages/' . $page . '/' . $page . '.php';
 
