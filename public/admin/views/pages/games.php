@@ -21,7 +21,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     if ($_POST['action'] === 'add_game') {
         $image = handleImageUpload($_FILES['image'] ?? null);
-        $stmt  = $pdo->prepare('INSERT INTO games (title, description, genre, price, discount, is_free, release_date, image) VALUES (?, ?, ?, ?, ?, ?, ?, ?)');
+        $stmt  = $pdo->prepare('INSERT INTO games (title, description, genre, price, discount, is_free, release_date, image, req_os, req_processor, req_memory, req_graphics, req_storage) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)');
         $stmt->execute([
             trim($_POST['title']),
             trim($_POST['description']),
@@ -31,17 +31,19 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             isset($_POST['is_free']) ? 1 : 0,
             $_POST['release_date'] ?: null,
             $image,
+            trim($_POST['req_os'] ?? ''),
+            trim($_POST['req_processor'] ?? ''),
+            trim($_POST['req_memory'] ?? ''),
+            trim($_POST['req_graphics'] ?? ''),
+            trim($_POST['req_storage'] ?? ''),
         ]);
+
         header('Location: /admin/?page=games');
         exit;
     }
 
     if ($_POST['action'] === 'edit_game') {
-        $old   = $pdo->prepare('SELECT image FROM games WHERE id = ?');
-        $old->execute([(int)$_POST['game_id']]);
-        $oldImage = $old->fetchColumn();
-        $image = handleImageUpload($_FILES['image'] ?? null, $oldImage);
-        $stmt  = $pdo->prepare('UPDATE games SET title=?, description=?, genre=?, price=?, discount=?, is_free=?, release_date=?, image=? WHERE id=?');
+        $stmt = $pdo->prepare('UPDATE games SET title=?, description=?, genre=?, price=?, discount=?, is_free=?, release_date=?, image=?, req_os=?, req_processor=?, req_memory=?, req_graphics=?, req_storage=? WHERE id=?');
         $stmt->execute([
             trim($_POST['title']),
             trim($_POST['description']),
@@ -51,8 +53,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             isset($_POST['is_free']) ? 1 : 0,
             $_POST['release_date'] ?: null,
             $image,
+            trim($_POST['req_os'] ?? ''),
+            trim($_POST['req_processor'] ?? ''),
+            trim($_POST['req_memory'] ?? ''),
+            trim($_POST['req_graphics'] ?? ''),
+            trim($_POST['req_storage'] ?? ''),
             (int)$_POST['game_id'],
         ]);
+
         header('Location: /admin/?page=games');
         exit;
     }
@@ -99,7 +107,7 @@ $games = $pdo->query('SELECT * FROM games ORDER BY created_at DESC')->fetchAll()
                 <label class="form-label">Title</label>
                 <input type="text" name="title" class="form-input" value="<?= htmlspecialchars($editGame['title'] ?? '') ?>" required>
             </div>
-            
+
             <div class="form-group">
                 <label class="form-label">Genre</label>
                 <input type="text" name="genre" class="form-input" value="<?= htmlspecialchars($editGame['genre'] ?? '') ?>">
@@ -120,6 +128,31 @@ $games = $pdo->query('SELECT * FROM games ORDER BY created_at DESC')->fetchAll()
                 <input type="date" name="release_date" class="form-input" value="<?= $editGame['release_date'] ?? '' ?>">
             </div>
             
+            <div class="form-group">
+                <label class="form-label">OS</label>
+                <input type="text" name="req_os" class="form-input" placeholder="Windows 10/11 64-bit" value="<?= htmlspecialchars($editGame['req_os'] ?? '') ?>">
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">Processor</label>
+                <input type="text" name="req_processor" class="form-input" placeholder="Intel Core i5 / AMD Ryzen 5" value="<?= htmlspecialchars($editGame['req_processor'] ?? '') ?>">
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">Memory</label>
+                <input type="text" name="req_memory" class="form-input" placeholder="8 GB RAM" value="<?= htmlspecialchars($editGame['req_memory'] ?? '') ?>">
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">Graphics</label>
+                <input type="text" name="req_graphics" class="form-input" placeholder="GTX 1060 / RX 580" value="<?= htmlspecialchars($editGame['req_graphics'] ?? '') ?>">
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">Storage</label>
+                <input type="text" name="req_storage" class="form-input" placeholder="20 GB available" value="<?= htmlspecialchars($editGame['req_storage'] ?? '') ?>">
+            </div>
+
             <div class="form-group">
                 <label class="form-label">Game Image</label>
                 <?php if (!empty($editGame['image'])): ?>

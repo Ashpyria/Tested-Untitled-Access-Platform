@@ -99,8 +99,8 @@ if (isLoggedIn()) {
     </div>
 </div>
 
-<!-- GAME INFO -->
-<div class="grid-2" style="gap:24px;margin-bottom:24px;align-items:start">
+    <!-- GAME INFO -->
+    <div class="grid-2" style="gap:24px;margin-bottom:24px;align-items:start">
 
     <!-- System Requirements -->
     <div class="card" style="padding:24px">
@@ -108,26 +108,27 @@ if (isLoggedIn()) {
         <div style="display:flex;flex-direction:column;gap:10px">
             <div class="flex-between">
                 <span class="text-secondary text-sm">OS</span>
-                <span class="text-white text-sm">Windows 10/11 64-bit</span>
+                <span class="text-white text-sm"><?= htmlspecialchars($game['req_os'] ?: '-') ?></span>
             </div>
             <div class="flex-between">
                 <span class="text-secondary text-sm">Processor</span>
-                <span class="text-white text-sm">Intel Core i5 / AMD Ryzen 5</span>
+                <span class="text-white text-sm"><?= htmlspecialchars($game['req_processor'] ?: '-') ?></span>
             </div>
             <div class="flex-between">
                 <span class="text-secondary text-sm">Memory</span>
-                <span class="text-white text-sm">8 GB RAM</span>
+                <span class="text-white text-sm"><?= htmlspecialchars($game['req_memory'] ?: '-') ?></span>
             </div>
             <div class="flex-between">
                 <span class="text-secondary text-sm">Graphics</span>
-                <span class="text-white text-sm">GTX 1060 / RX 580</span>
+                <span class="text-white text-sm"><?= htmlspecialchars($game['req_graphics'] ?: '-') ?></span>
             </div>
             <div class="flex-between">
                 <span class="text-secondary text-sm">Storage</span>
-                <span class="text-white text-sm">20 GB available</span>
+                <span class="text-white text-sm"><?= htmlspecialchars($game['req_storage'] ?: '-') ?></span>
             </div>
         </div>
     </div>
+
 
     <!-- Game Details -->
     <div class="card" style="padding:24px">
