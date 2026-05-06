@@ -6,7 +6,14 @@ $dealOfDay = $saleGames[0] ?? null;
 <?php if ($dealOfDay): ?>
 <?php $dealPrice = $dealOfDay['price'] * (1 - $dealOfDay['discount'] / 100); ?>
 <div class="card" style="padding:20px;margin-bottom:24px;display:flex;align-items:center;gap:24px">
-    <div style="width:120px;height:80px;background:var(--bg-secondary);flex-shrink:0;display:flex;align-items:center;justify-content:center;color:var(--text-secondary);font-size:12px">No Image</div>
+    <div style="width:120px;height:80px;background:var(--bg-secondary);flex-shrink:0;border-radius:var(--radius-sm);overflow:hidden;display:flex;align-items:center;justify-content:center">
+        <?php if (!empty($dealOfDay['image'])): ?>
+            <img src="/uploads/games/<?= htmlspecialchars($dealOfDay['image']) ?>" style="width:100%;height:100%;object-fit:cover">
+        <?php else: ?>
+            <span class="text-secondary" style="font-size:12px">No Image</span>
+        <?php endif; ?>
+    </div>
+
     <div style="flex:1">
         <p class="text-secondary text-sm" style="margin-bottom:4px;text-transform:uppercase;letter-spacing:1px">Deal of the Day</p>
         <p class="text-white" style="font-size:18px;font-weight:700;margin-bottom:4px"><?= htmlspecialchars($dealOfDay['title']) ?></p>
@@ -35,9 +42,17 @@ $dealOfDay = $saleGames[0] ?? null;
     <?php foreach ($saleGames as $game): ?>
     <?php $discounted = $game['price'] * (1 - $game['discount'] / 100); ?>
     <div class="card game-card">
-        <div class="game-card-img">No Image</div>
+        <div class="game-card-img">
+            <?php if (!empty($game['image'])): ?>
+                <img src="/uploads/games/<?= htmlspecialchars($game['image']) ?>" alt="<?= htmlspecialchars($game['title']) ?>" style="width:100%;height:100%;object-fit:cover">
+            <?php else: ?>
+                <span class="text-secondary" style="font-size:12px">No Image</span>
+            <?php endif; ?>
+        </div>
         <div class="game-card-body">
-            <p class="game-card-title"><?= htmlspecialchars($game['title']) ?></p>
+            <a href="/?page=game&id=<?= $game['id'] ?>" style="text-decoration:none">
+                <p class="game-card-title"><?= htmlspecialchars($game['title']) ?></p>
+            </a>
             <p class="game-card-genre"><?= htmlspecialchars($game['genre']) ?></p>
             <div class="game-card-price">
                 <span class="price-discount">-<?= $game['discount'] ?>%</span>

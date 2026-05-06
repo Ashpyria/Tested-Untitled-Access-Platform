@@ -1,11 +1,27 @@
 <?php
 $pdo = getDB();
 
-// Handle actions
+function handleImageUpload($file, $oldImage = null) {
+    if (!isset($file) || $file['error'] !== UPLOAD_ERR_OK) return $oldImage;
+    $ext      = strtolower(pathinfo($file['name'], PATHINFO_EXTENSION));
+    $allowed  = ['jpg', 'jpeg', 'png', 'webp'];
+    if (!in_array($ext, $allowed)) return $oldImage;
+    $filename = uniqid('game_') . '.' . $ext;
+    $dest     = __DIR__ . '/../../../../public/uploads/games/' . $filename;
+    if (move_uploaded_file($file['tmp_name'], $dest)) {
+        if ($oldImage && file_exists(__DIR__ . '/../../../../public/uploads/games/' . $oldImage)) {
+            unlink(__DIR__ . '/../../../../public/uploads/games/' . $oldImage);
+        }
+        return $filename;
+    }
+    return $oldImage;
+}
+
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     if ($_POST['action'] === 'add_game') {
-        $stmt = $pdo->prepare('INSERT INTO games (title, description, genre, price, discount, is_free, release_date) VALUES (?, ?, ?, ?, ?, ?, ?)');
+        $image = handleImageUpload($_FILES['image'] ?? null);
+        $stmt  = $pdo->prepare('INSERT INTO games (title, description, genre, price, discount, is_free, release_date, image) VALUES (?, ?, ?, ?, ?, ?, ?, ?)');
         $stmt->execute([
             trim($_POST['title']),
             trim($_POST['description']),
@@ -14,13 +30,18 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             (int)$_POST['discount'],
             isset($_POST['is_free']) ? 1 : 0,
             $_POST['release_date'] ?: null,
+            $image,
         ]);
         header('Location: /admin/?page=games');
         exit;
     }
 
     if ($_POST['action'] === 'edit_game') {
-        $stmt = $pdo->prepare('UPDATE games SET title=?, description=?, genre=?, price=?, discount=?, is_free=?, release_date=? WHERE id=?');
+        $old   = $pdo->prepare('SELECT image FROM games WHERE id = ?');
+        $old->execute([(int)$_POST['game_id']]);
+        $oldImage = $old->fetchColumn();
+        $image = handleImageUpload($_FILES['image'] ?? null, $oldImage);
+        $stmt  = $pdo->prepare('UPDATE games SET title=?, description=?, genre=?, price=?, discount=?, is_free=?, release_date=?, image=? WHERE id=?');
         $stmt->execute([
             trim($_POST['title']),
             trim($_POST['description']),
@@ -29,6 +50,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             (int)$_POST['discount'],
             isset($_POST['is_free']) ? 1 : 0,
             $_POST['release_date'] ?: null,
+            $image,
             (int)$_POST['game_id'],
         ]);
         header('Location: /admin/?page=games');
@@ -36,12 +58,18 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 
     if ($_POST['action'] === 'delete_game') {
-        $stmt = $pdo->prepare('DELETE FROM games WHERE id = ?');
-        $stmt->execute([(int)$_POST['game_id']]);
+        $old = $pdo->prepare('SELECT image FROM games WHERE id = ?');
+        $old->execute([(int)$_POST['game_id']]);
+        $oldImage = $old->fetchColumn();
+        if ($oldImage && file_exists(__DIR__ . '/../../../../public/uploads/games/' . $oldImage)) {
+            unlink(__DIR__ . '/../../../../public/uploads/games/' . $oldImage);
+        }
+        $pdo->prepare('DELETE FROM games WHERE id = ?')->execute([(int)$_POST['game_id']]);
         header('Location: /admin/?page=games');
         exit;
     }
 }
+
 
 $editGame = null;
 if (isset($_GET['edit'])) {
@@ -60,7 +88,7 @@ $games = $pdo->query('SELECT * FROM games ORDER BY created_at DESC')->fetchAll()
 <!-- Add / Edit Form -->
 <div class="card" style="padding:24px;margin-bottom:24px">
     <h2 class="section-title"><?= $editGame ? 'Edit Game' : 'Add New Game' ?></h2>
-    <form method="POST">
+    <form method="POST" enctype="multipart/form-data">
         <input type="hidden" name="action" value="<?= $editGame ? 'edit_game' : 'add_game' ?>">
         <?php if ($editGame): ?>
         <input type="hidden" name="game_id" value="<?= $editGame['id'] ?>">
@@ -71,22 +99,36 @@ $games = $pdo->query('SELECT * FROM games ORDER BY created_at DESC')->fetchAll()
                 <label class="form-label">Title</label>
                 <input type="text" name="title" class="form-input" value="<?= htmlspecialchars($editGame['title'] ?? '') ?>" required>
             </div>
+            
             <div class="form-group">
                 <label class="form-label">Genre</label>
                 <input type="text" name="genre" class="form-input" value="<?= htmlspecialchars($editGame['genre'] ?? '') ?>">
             </div>
+
             <div class="form-group">
                 <label class="form-label">Price (Rp)</label>
                 <input type="number" name="price" class="form-input" value="<?= $editGame['price'] ?? 0 ?>">
             </div>
+
             <div class="form-group">
                 <label class="form-label">Discount (%)</label>
                 <input type="number" name="discount" class="form-input" min="0" max="100" value="<?= $editGame['discount'] ?? 0 ?>">
             </div>
+
             <div class="form-group">
                 <label class="form-label">Release Date</label>
                 <input type="date" name="release_date" class="form-input" value="<?= $editGame['release_date'] ?? '' ?>">
             </div>
+            
+            <div class="form-group">
+                <label class="form-label">Game Image</label>
+                <?php if (!empty($editGame['image'])): ?>
+                    <img src="/uploads/games/<?= htmlspecialchars($editGame['image']) ?>"
+                        style="width:100%;height:120px;object-fit:cover;border-radius:var(--radius-sm);margin-bottom:8px">
+                <?php endif; ?>
+                <input type="file" name="image" class="form-input" accept="image/*">
+            </div>
+
             <div class="form-group" style="display:flex;align-items:center;gap:10px;padding-top:24px">
                 <input type="checkbox" name="is_free" id="is_free" <?= !empty($editGame['is_free']) ? 'checked' : '' ?>>
                 <label for="is_free" class="form-label" style="margin:0">Free to Play</label>

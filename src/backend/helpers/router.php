@@ -1,7 +1,7 @@
 <?php
 $page = $_GET['page'] ?? 'store';
 
-$allowed_pages = ['store', 'library', 'community', 'support', 'profile', 'cart', 'login', 'register'];
+$allowed_pages = ['store', 'library', 'community', 'support', 'profile', 'cart', 'login', 'register', 'game'];
 if (!in_array($page, $allowed_pages)) {
     $page = 'store';
 }
@@ -15,6 +15,7 @@ $titles = [
     'cart'      => 'Cart - Untitled Access Platform',
     'login'     => 'Login - Untitled Access Platform',
     'register'  => 'Register - Untitled Access Platform',
+    'game' => 'Game Detail - Untitled Access Platform',
 ];
 
 $page_title   = $titles[$page];
@@ -27,6 +28,7 @@ $models = [
     'community' => ['Community.php', 'Library.php'],
     'cart'      => ['Cart.php'],
     'support'   => ['Support.php'],
+    'game' => ['Game.php', 'Cart.php', 'Community.php'],
 ];
 
 foreach ($models[$page] ?? [] as $model) {

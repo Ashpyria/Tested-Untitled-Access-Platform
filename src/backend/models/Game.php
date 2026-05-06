@@ -26,3 +26,10 @@ function getFreeGames() {
     $pdo = getDB();
     return $pdo->query('SELECT * FROM games WHERE is_free = 1')->fetchAll();
 }
+
+function getGameById($id) {
+    $pdo  = getDB();
+    $stmt = $pdo->prepare('SELECT * FROM games WHERE id = ?');
+    $stmt->execute([$id]);
+    return $stmt->fetch();
+}
