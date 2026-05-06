@@ -17,7 +17,15 @@ $dealOfDay = $saleGames[0] ?? null;
             <span class="price-discount" style="font-size:14px;padding:4px 10px">-<?= $dealOfDay['discount'] ?>%</span>
             <span class="price-tag" style="font-size:18px">Rp <?= number_format($dealPrice, 0, ',', '.') ?></span>
         </div>
-        <a href="#" class="btn btn-green">Add to Cart</a>
+        <?php if (isLoggedIn()): ?>
+            <?php if (isInCart(getCurrentUser()['id'], $dealOfDay['id'])): ?>
+                <a href="/?page=cart" class="btn btn-outline">In Cart</a>
+            <?php else: ?>
+                <a href="/?action=add_to_cart&game_id=<?= $dealOfDay['id'] ?>" class="btn btn-green">Add to Cart</a>
+            <?php endif; ?>
+        <?php else: ?>
+            <a href="/?page=login" class="btn btn-outline">Login to Buy</a>
+        <?php endif; ?>
     </div>
 </div>
 <?php endif; ?>
@@ -34,6 +42,17 @@ $dealOfDay = $saleGames[0] ?? null;
             <div class="game-card-price">
                 <span class="price-discount">-<?= $game['discount'] ?>%</span>
                 <span class="price-tag">Rp <?= number_format($discounted, 0, ',', '.') ?></span>
+            </div>
+            <div class="mt-8">
+                <?php if (isLoggedIn()): ?>
+                    <?php if (isInCart(getCurrentUser()['id'], $game['id'])): ?>
+                        <a href="/?page=cart" class="btn btn-outline btn-sm btn-block">In Cart</a>
+                    <?php else: ?>
+                        <a href="/?action=add_to_cart&game_id=<?= $game['id'] ?>" class="btn btn-green btn-sm btn-block">Add to Cart</a>
+                    <?php endif; ?>
+                <?php else: ?>
+                    <a href="/?page=login" class="btn btn-outline btn-sm btn-block">Login to Buy</a>
+                <?php endif; ?>
             </div>
         </div>
     </div>

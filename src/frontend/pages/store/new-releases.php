@@ -9,16 +9,29 @@
         <div class="game-card-body">
             <p class="game-card-title"><?= htmlspecialchars($game['title']) ?></p>
             <p class="game-card-genre"><?= htmlspecialchars($game['genre']) ?></p>
-            <div class="game-card-price" style="justify-content:space-between">
+            <div class="game-card-price">
                 <?php if ($game['is_free']): ?>
-                    <span class="price-free">Free to Play</span>
+                    <span class="price-free">Free</span>
                 <?php elseif ($discounted): ?>
                     <span class="price-discount">-<?= $game['discount'] ?>%</span>
                     <span class="price-tag">Rp <?= number_format($discounted, 0, ',', '.') ?></span>
                 <?php else: ?>
                     <span class="price-tag">Rp <?= number_format($game['price'], 0, ',', '.') ?></span>
                 <?php endif; ?>
-                <span class="tag tag-green" style="font-size:10px">New</span>
+                    <span class="tag tag-danger" style="font-size:10px">New</span>
+            </div>
+            <div class="mt-8">
+                <?php if (isLoggedIn()): ?>
+                    <?php if (isInCart(getCurrentUser()['id'], $game['id'])): ?>
+                        <a href="/?page=cart" class="btn btn-outline btn-sm btn-block">In Cart</a>
+                    <?php elseif ($game['is_free']): ?>
+                        <a href="/?action=add_to_cart&game_id=<?= $game['id'] ?>" class="btn btn-green btn-sm btn-block">Get Free</a>
+                    <?php else: ?>
+                        <a href="/?action=add_to_cart&game_id=<?= $game['id'] ?>" class="btn btn-green btn-sm btn-block">Add to Cart</a>
+                    <?php endif; ?>
+                <?php else: ?>
+                    <a href="/?page=login" class="btn btn-outline btn-sm btn-block">Login to Buy</a>
+                <?php endif; ?>
             </div>
         </div>
     </div>

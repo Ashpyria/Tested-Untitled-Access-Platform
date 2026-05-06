@@ -11,6 +11,17 @@
             <div class="game-card-price">
                 <span class="price-free">Free to Play</span>
             </div>
+            <div class="mt-8">
+                <?php if (isLoggedIn()): ?>
+                    <?php if (isInCart(getCurrentUser()['id'], $game['id'])): ?>
+                        <a href="/?page=cart" class="btn btn-outline btn-sm btn-block">In Cart</a>
+                    <?php else: ?>
+                        <a href="/?action=add_to_cart&game_id=<?= $game['id'] ?>" class="btn btn-green btn-sm btn-block">Get Free</a>
+                    <?php endif; ?>
+                <?php else: ?>
+                    <a href="/?page=login" class="btn btn-outline btn-sm btn-block">Login to Buy</a>
+                <?php endif; ?>
+            </div>
         </div>
     </div>
     <?php endforeach; ?>

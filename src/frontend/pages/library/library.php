@@ -1,26 +1,53 @@
+<?php
+requireLogin();
+$user_id        = getCurrentUser()['id'];
+$filter         = $_GET['filter'] ?? 'all';
+$genre          = $_GET['genre'] ?? '';
+$totalGames     = getLibraryCount($user_id);
+$totalHours     = getTotalHours($user_id);
+$totalInstalled = getInstalledCount($user_id);
+$genres         = getLibraryGenres($user_id);
+$totalFavorites = getFavoriteCount($user_id);
+
+
+if ($filter === 'installed') {
+    $games = getInstalledGames($user_id);
+} elseif ($filter === 'not-installed') {
+    $games = getNotInstalledGames($user_id);
+} elseif ($filter === 'favorites') {
+    $games = getFavoriteGames($user_id);
+} elseif ($filter === 'genre' && $genre) {
+    $games = getGamesByGenre($user_id, $genre);
+} else {
+    $filter = 'all';
+    $games  = getUserLibrary($user_id);
+}
+?>
+
 <div class="layout-sidebar">
 
     <!-- SIDEBAR -->
     <aside class="sidebar">
         <p class="sidebar-title">My Library</p>
         <nav class="sidebar-menu">
-            <a href="#" class="sidebar-link active">All Games</a>
-            <a href="#" class="sidebar-link">Recently Played</a>
-            <a href="#" class="sidebar-link">Favorites</a>
-            <a href="#" class="sidebar-link">Installed</a>
-            <a href="#" class="sidebar-link">Not Installed</a>
+            <a href="/?page=library" class="sidebar-link <?= $filter === 'all' ? 'active' : '' ?>">All Games</a>
+            <a href="/?page=library&filter=favorites" class="sidebar-link <?= $filter === 'favorites' ? 'active' : '' ?>">Favorites</a>
+            <a href="/?page=library&filter=installed" class="sidebar-link <?= $filter === 'installed' ? 'active' : '' ?>">Installed</a>
+            <a href="/?page=library&filter=not-installed" class="sidebar-link <?= $filter === 'not-installed' ? 'active' : '' ?>">Not Installed</a>
         </nav>
 
+        <?php if (!empty($genres)): ?>
         <hr class="divider">
-
         <p class="sidebar-title">Categories</p>
         <nav class="sidebar-menu">
-            <a href="#" class="sidebar-link">Action</a>
-            <a href="#" class="sidebar-link">RPG</a>
-            <a href="#" class="sidebar-link">Strategy</a>
-            <a href="#" class="sidebar-link">Sports</a>
-            <a href="#" class="sidebar-link">Horror</a>
+            <?php foreach ($genres as $g): ?>
+            <a href="/?page=library&filter=genre&genre=<?= urlencode($g) ?>"
+               class="sidebar-link <?= ($filter === 'genre' && $genre === $g) ? 'active' : '' ?>">
+                <?= htmlspecialchars($g) ?>
+            </a>
+            <?php endforeach; ?>
         </nav>
+        <?php endif; ?>
     </aside>
 
     <!-- MAIN CONTENT -->
@@ -28,142 +55,43 @@
 
         <!-- Header -->
         <div class="flex-between mb-16">
-            <h1 class="page-title" style="margin-bottom:0;border:none">
-                My Games
-                <span class="tag tag-accent" style="font-size:12px;margin-left:8px">8 Games</span>
-            </h1>
-            <div class="flex-gap">
-                <div class="navbar-search">
-                    <input type="text" placeholder="Search library...">
-                    <button>Search</button>
-                </div>
-                <select class="form-select" style="width:auto">
-                    <option>Sort: A-Z</option>
-                    <option>Sort: Recent</option>
-                    <option>Sort: Playtime</option>
-                </select>
-            </div>
+            <h1 class="page-title" style="margin-bottom:0;border:none">My Games</h1>
         </div>
 
         <!-- Stats -->
         <div class="stats-row">
             <div class="stat-box">
-                <p class="stat-value">8</p>
+                <p class="stat-value"><?= $totalGames ?></p>
                 <p class="stat-label">Total Games</p>
             </div>
             <div class="stat-box">
-                <p class="stat-value">342</p>
+                <p class="stat-value"><?= number_format($totalHours) ?></p>
                 <p class="stat-label">Hours Played</p>
             </div>
             <div class="stat-box">
-                <p class="stat-value">24</p>
-                <p class="stat-label">Achievements</p>
-            </div>
-            <div class="stat-box">
-                <p class="stat-value">3</p>
+                <p class="stat-value"><?= $totalInstalled ?></p>
                 <p class="stat-label">Installed</p>
             </div>
+            <div class="stat-box">
+                <p class="stat-value"><?= $totalFavorites ?></p>
+                <p class="stat-label">Favorites</p>
+            </div>
         </div>
 
-        <!-- Game Grid -->
-        <div class="grid-4">
+        <!-- Content -->
+        <?php
+        if ($filter === 'favorites') {
+            include __DIR__ . '/favorites.php';
+        } elseif ($filter === 'genre') {
+            include __DIR__ . '/by-genre.php';
+        } elseif ($filter === 'installed') {
+            include __DIR__ . '/installed.php';
+        } elseif ($filter === 'not-installed') {
+            include __DIR__ . '/not-installed.php';
+        } else {
+            include __DIR__ . '/all-games.php';
+        }
+        ?>
 
-            <div class="card game-card">
-                <div class="game-card-img">No Image</div>
-                <div class="game-card-body">
-                    <p class="game-card-title">Cyber Odyssey 2077</p>
-                    <p class="game-card-genre">128 hours played</p>
-                    <div class="flex-between mt-8">
-                        <span class="tag tag-green">Installed</span>
-                        <a href="#" class="btn btn-green btn-sm">Play</a>
-                    </div>
-                </div>
-            </div>
-
-            <div class="card game-card">
-                <div class="game-card-img">No Image</div>
-                <div class="game-card-body">
-                    <p class="game-card-title">Shadow Realm Online</p>
-                    <p class="game-card-genre">87 hours played</p>
-                    <div class="flex-between mt-8">
-                        <span class="tag tag-green">Installed</span>
-                        <a href="#" class="btn btn-green btn-sm">Play</a>
-                    </div>
-                </div>
-            </div>
-
-            <div class="card game-card">
-                <div class="game-card-img">No Image</div>
-                <div class="game-card-body">
-                    <p class="game-card-title">Iron Fortress</p>
-                    <p class="game-card-genre">54 hours played</p>
-                    <div class="flex-between mt-8">
-                        <span class="tag">Not Installed</span>
-                        <a href="#" class="btn btn-outline btn-sm">Install</a>
-                    </div>
-                </div>
-            </div>
-
-            <div class="card game-card">
-                <div class="game-card-img">No Image</div>
-                <div class="game-card-body">
-                    <p class="game-card-title">Velocity Rush</p>
-                    <p class="game-card-genre">32 hours played</p>
-                    <div class="flex-between mt-8">
-                        <span class="tag tag-green">Installed</span>
-                        <a href="#" class="btn btn-green btn-sm">Play</a>
-                    </div>
-                </div>
-            </div>
-
-            <div class="card game-card">
-                <div class="game-card-img">No Image</div>
-                <div class="game-card-body">
-                    <p class="game-card-title">Dark Hollow</p>
-                    <p class="game-card-genre">21 hours played</p>
-                    <div class="flex-between mt-8">
-                        <span class="tag">Not Installed</span>
-                        <a href="#" class="btn btn-outline btn-sm">Install</a>
-                    </div>
-                </div>
-            </div>
-
-            <div class="card game-card">
-                <div class="game-card-img">No Image</div>
-                <div class="game-card-body">
-                    <p class="game-card-title">Farm & Build</p>
-                    <p class="game-card-genre">10 hours played</p>
-                    <div class="flex-between mt-8">
-                        <span class="tag">Not Installed</span>
-                        <a href="#" class="btn btn-outline btn-sm">Install</a>
-                    </div>
-                </div>
-            </div>
-
-            <div class="card game-card">
-                <div class="game-card-img">No Image</div>
-                <div class="game-card-body">
-                    <p class="game-card-title">Star Commander</p>
-                    <p class="game-card-genre">6 hours played</p>
-                    <div class="flex-between mt-8">
-                        <span class="tag">Not Installed</span>
-                        <a href="#" class="btn btn-outline btn-sm">Install</a>
-                    </div>
-                </div>
-            </div>
-
-            <div class="card game-card">
-                <div class="game-card-img">No Image</div>
-                <div class="game-card-body">
-                    <p class="game-card-title">Pixel Dungeon X</p>
-                    <p class="game-card-genre">4 hours played</p>
-                    <div class="flex-between mt-8">
-                        <span class="tag">Not Installed</span>
-                        <a href="#" class="btn btn-outline btn-sm">Install</a>
-                    </div>
-                </div>
-            </div>
-
-        </div>
     </div>
 </div>

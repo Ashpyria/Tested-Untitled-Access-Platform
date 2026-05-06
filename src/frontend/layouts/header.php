@@ -1,6 +1,13 @@
 <?php
+if (isLoggedIn() && function_exists('getCartCount')) {
+    // already loaded
+} elseif (isLoggedIn()) {
+    require_once __DIR__ . '/../../backend/models/Cart.php';
+}
+
 $current_page = $_GET['page'] ?? 'store';
 ?>
+
 <!DOCTYPE html>
 <html lang="id">
 <head>
@@ -62,18 +69,25 @@ $current_page = $_GET['page'] ?? 'store';
                    class="nav-link <?= $current_page === 'cart' ? 'active' : '' ?>"
                    style="position:relative">
                     Cart
-                    <span class="cart-badge">3</span>
+                    <span class="cart-badge"><?= isLoggedIn() ? getCartCount(getCurrentUser()['id']) : 0 ?></span>
+
                 </a>
 
                 <!-- User -->
-                <a href="/?page=profile" class="navbar-user">
-                    <img src="/assets/images/avatars/default.png"
-                         alt="Avatar"
-                         class="navbar-avatar"
-                         onerror="this.style.background='#242424'">
-                    <span class="navbar-username">Player1</span>
-                </a>
-
+                <?php if (isLoggedIn()): ?>
+                    <?php $navUser = getCurrentUser(); ?>
+                    <a href="/?page=profile" class="navbar-user">
+                        <img src="/assets/images/avatars/<?= htmlspecialchars($navUser['avatar'] ?? 'default.png') ?>"
+                            alt="Avatar"
+                            class="navbar-avatar"
+                            onerror="this.style.background='#242424'">
+                        <span class="navbar-username"><?= htmlspecialchars($navUser['username']) ?></span>
+                    </a>
+                    <a href="/?page=logout" class="btn btn-outline btn-sm">Logout</a>
+                <?php else: ?>
+                    <a href="/?page=login" class="btn btn-outline btn-sm">Login</a>
+                    <a href="/?page=register" class="btn btn-primary btn-sm">Register</a>
+                <?php endif; ?>
             </div>
         </div>
     </div>
