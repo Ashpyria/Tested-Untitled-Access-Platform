@@ -54,14 +54,8 @@ $current_page = $_GET['page'] ?? 'store';
                 </li>
             </ul>
 
-            <!-- Kanan: Search + Cart + User -->
+            <!-- Kanan: -->
             <div class="navbar-right">
-
-                <!-- Search -->
-                <div class="navbar-search">
-                    <input type="text" placeholder="Search games...">
-                    <button>Search</button>
-                </div>
                 
                 <!-- Cart -->
                 <a href="/?page=cart"
