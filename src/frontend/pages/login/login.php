@@ -14,7 +14,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $user = getUserByEmail($email);
         if ($user && password_verify($password, $user['password'])) {
             loginUser($user);
-            header('Location: /?page=store');
+            header('Location: ' . ($user['role'] === 'admin' ? '/admin/' : '/?page=store'));
             exit;
         } else {
             $error = 'Email atau password salah.';
