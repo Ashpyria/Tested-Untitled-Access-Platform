@@ -12,8 +12,17 @@
             <p class="text-sm" style="color:var(--success)"><?= htmlspecialchars($profileSuccess) ?></p>
         </div>
         <?php endif; ?>
-        <form method="POST">
+        <form method="POST" enctype="multipart/form-data">
             <input type="hidden" name="action" value="update_profile">
+            <div class="form-group" style="text-align:center">
+                <img src="/assets/images/avatars/<?= htmlspecialchars($user['avatar'] ?? 'default.png') ?>"
+                    style="width:80px;height:80px;object-fit:cover;border-radius:50%;border:3px solid var(--accent);margin-bottom:12px"
+                    onerror="this.src='/assets/images/avatars/default.png'">
+                <div>
+                    <label class="form-label">Ganti Avatar</label>
+                    <input type="file" name="avatar" class="form-input" accept="image/*">
+                </div>
+            </div>
             <div class="form-group">
                 <label class="form-label">Username</label>
                 <input type="text" name="username" class="form-input" value="<?= htmlspecialchars($user['username']) ?>">

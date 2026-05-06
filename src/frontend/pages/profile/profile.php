@@ -27,16 +27,33 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
         $email    = trim($_POST['email'] ?? '');
         $bio      = trim($_POST['bio'] ?? '');
         $country  = trim($_POST['country'] ?? '');
+
         if (empty($username) || empty($email)) {
             $profileError = 'Username dan email wajib diisi.';
         } else {
-            updateProfile($user['id'], $username, $email, $bio, $country);
+            $avatar = $user['avatar'] ?? 'default.png';
+            if (isset($_FILES['avatar']) && $_FILES['avatar']['error'] === UPLOAD_ERR_OK) {
+                $ext     = strtolower(pathinfo($_FILES['avatar']['name'], PATHINFO_EXTENSION));
+                $allowed = ['jpg', 'jpeg', 'png', 'webp'];
+                if (in_array($ext, $allowed)) {
+                    $filename = 'avatar_' . $user['id'] . '_' . time() . '.' . $ext;
+                    $dest     = __DIR__ . '/../../../../public/assets/images/avatars/' . $filename;
+                    if (move_uploaded_file($_FILES['avatar']['tmp_name'], $dest)) {
+                        if ($avatar !== 'default.png' && file_exists(__DIR__ . '/../../../../public/assets/images/avatars/' . $avatar)) {
+                            unlink(__DIR__ . '/../../../../public/assets/images/avatars/' . $avatar);
+                        }
+                        $avatar = $filename;
+                    }
+                }
+            }
+            updateProfile($user['id'], $username, $email, $bio, $country, $avatar);
             $updated = getUserById($user['id']);
             loginUser($updated);
             $user           = $updated;
             $profileSuccess = 'Profil berhasil diperbarui.';
         }
     }
+
 
     if ($_POST['action'] === 'update_password') {
         $oldPass = $_POST['old_password'] ?? '';

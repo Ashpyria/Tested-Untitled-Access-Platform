@@ -38,13 +38,15 @@ function usernameExists($username) {
     return $stmt->fetch() !== false;
 }
 
-function updateProfile($user_id, $username, $email, $bio, $country) {
-    $pdo  = getDB();
-    $stmt = $pdo->prepare('
-        UPDATE users SET username = ?, email = ?, bio = ?, country = ?
-        WHERE id = ?
-    ');
-    $stmt->execute([$username, $email, $bio, $country, $user_id]);
+function updateProfile($id, $username, $email, $bio, $country, $avatar = null) {
+    $pdo = getDB();
+    if ($avatar) {
+        $stmt = $pdo->prepare('UPDATE users SET username=?, email=?, bio=?, country=?, avatar=? WHERE id=?');
+        $stmt->execute([$username, $email, $bio, $country, $avatar, $id]);
+    } else {
+        $stmt = $pdo->prepare('UPDATE users SET username=?, email=?, bio=?, country=? WHERE id=?');
+        $stmt->execute([$username, $email, $bio, $country, $id]);
+    }
 }
 
 function updatePassword($user_id, $new_password) {
