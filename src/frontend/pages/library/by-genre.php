@@ -7,7 +7,14 @@
 <div class="grid-4">
     <?php foreach ($games as $game): ?>
     <div class="card game-card">
-        <div class="game-card-img">No Image</div>
+        <div class="game-card-img">
+            <?php if (!empty($game['image'])): ?>
+                <img src="/uploads/games/<?= htmlspecialchars($game['image']) ?>" alt="<?= htmlspecialchars($game['title']) ?>" style="width:100%;height:100%;object-fit:cover">
+            <?php else: ?>
+                <span class="text-secondary" style="font-size:12px">No Image</span>
+            <?php endif; ?>
+        </div>
+
         <div class="game-card-body">
             <p class="game-card-title"><?= htmlspecialchars($game['title']) ?></p>
             <p class="game-card-genre"><?= $game['hours_played'] ?> hours played</p>

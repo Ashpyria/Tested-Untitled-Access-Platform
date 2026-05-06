@@ -26,7 +26,13 @@ $total   = getCartTotal($items);
         <div class="card" style="padding:20px">
             <div class="flex-between">
                 <div class="flex-gap" style="gap:16px">
-                    <div style="width:80px;height:60px;background:var(--bg-secondary);flex-shrink:0;display:flex;align-items:center;justify-content:center;color:var(--text-secondary);font-size:11px">No Image</div>
+                <div style="width:80px;height:60px;background:var(--bg-secondary);flex-shrink:0;border-radius:var(--radius-sm);overflow:hidden;display:flex;align-items:center;justify-content:center">
+                    <?php if (!empty($item['image'])): ?>
+                        <img src="/uploads/games/<?= htmlspecialchars($item['image']) ?>" style="width:100%;height:100%;object-fit:cover">
+                    <?php else: ?>
+                        <span class="text-secondary" style="font-size:11px">No Image</span>
+                    <?php endif; ?>
+                </div>
                     <div>
                         <p class="text-white" style="font-weight:600;margin-bottom:4px"><?= htmlspecialchars($item['title']) ?></p>
                         <div class="flex-gap mt-8">
