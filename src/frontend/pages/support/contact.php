@@ -1,89 +1,119 @@
 <?php
-$ticketSuccess = '';
-$ticketError   = '';
+$preCategory = $_GET['cat'] ?? '';
+$catMap = [
+    'payment'  => 'Purchase & Payment',
+    'install'  => 'Installation & Download',
+    'account'  => 'Account & Login',
+    'refund'   => 'Refund',
+    'ingame'   => 'In-Game Issues',
+    'security' => 'Account Security',
+];
+$preCategory = $catMap[$preCategory] ?? '';
+$sent = isset($_GET['sent']);
 
-if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['action'] === 'send_ticket') {
-    $name     = trim($_POST['ticket_name'] ?? '');
-    $email    = trim($_POST['ticket_email'] ?? '');
-    $category = trim($_POST['ticket_category'] ?? '');
-    $message  = trim($_POST['ticket_message'] ?? '');
-
-    if (empty($name) || empty($email) || empty($category) || empty($message)) {
-        $ticketError = 'Semua field wajib diisi.';
-    } else {
-        $uid = isLoggedIn() ? getCurrentUser()['id'] : null;
-        createTicket($uid, $name, $email, $category, $message);
-        $ticketSuccess = 'Pesan berhasil dikirim! Tim kami akan menghubungi kamu segera.';
-    }
-}
+$categories = [
+    'Purchase & Payment',
+    'Installation & Download',
+    'Account & Login',
+    'Refund',
+    'In-Game Issues',
+    'Account Security',
+    'Other',
+];
 ?>
 
-<div class="grid-2" style="align-items:start">
-    <div class="card" style="padding:28px">
-        <h2 class="section-title">Kirim Pesan</h2>
+<div class="supp-contact-layout">
 
-        <?php if ($ticketSuccess): ?>
-        <div style="background:rgba(34,197,94,0.1);border:1px solid var(--success);border-radius:var(--radius-sm);padding:12px 16px;margin-bottom:16px">
-            <p class="text-sm" style="color:var(--success)"><?= htmlspecialchars($ticketSuccess) ?></p>
+    <!-- FORM -->
+    <div class="supp-contact-form-card">
+        <div class="supp-section-label" style="margin-bottom:20px">Send us a message</div>
+
+        <?php if ($sent): ?>
+        <div class="alert alert-success mb-16">
+            <strong>Message sent!</strong> Our team will get back to you within 24 business hours.
         </div>
         <?php endif; ?>
 
-        <?php if ($ticketError): ?>
-        <div style="background:rgba(239,68,68,0.1);border:1px solid var(--danger);border-radius:var(--radius-sm);padding:12px 16px;margin-bottom:16px">
-            <p class="text-sm" style="color:var(--danger)"><?= htmlspecialchars($ticketError) ?></p>
+        <?php if (!empty($ticketError)): ?>
+        <div class="alert alert-danger mb-16">
+            <?= htmlspecialchars($ticketError) ?>
         </div>
         <?php endif; ?>
 
-        <form method="POST">
+        <form method="POST" action="/?page=support&tab=contact">
             <input type="hidden" name="action" value="send_ticket">
-            <div class="form-group">
-                <label class="form-label">Nama Lengkap</label>
-                <input type="text" name="ticket_name" class="form-input"
-                       placeholder="Masukkan nama kamu"
-                       value="<?= htmlspecialchars(isLoggedIn() ? getCurrentUser()['username'] : ($_POST['ticket_name'] ?? '')) ?>">
+
+            <div class="supp-form-row">
+                <div class="form-group">
+                    <label class="form-label">Full Name</label>
+                    <input type="text" name="ticket_name" class="form-input"
+                           placeholder="Your name"
+                           value="<?= htmlspecialchars(isLoggedIn() ? getCurrentUser()['username'] : ($_POST['ticket_name'] ?? '')) ?>">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Email Address</label>
+                    <input type="email" name="ticket_email" class="form-input"
+                           placeholder="you@example.com"
+                           value="<?= htmlspecialchars(isLoggedIn() ? getCurrentUser()['email'] : ($_POST['ticket_email'] ?? '')) ?>">
+                </div>
             </div>
+
             <div class="form-group">
-                <label class="form-label">Email</label>
-                <input type="email" name="ticket_email" class="form-input"
-                       placeholder="email@contoh.com"
-                       value="<?= htmlspecialchars(isLoggedIn() ? getCurrentUser()['email'] : ($_POST['ticket_email'] ?? '')) ?>">
-            </div>
-            <div class="form-group">
-                <label class="form-label">Kategori Masalah</label>
+                <label class="form-label">Issue Category</label>
                 <select name="ticket_category" class="form-select">
-                    <option value="">Pilih kategori...</option>
-                    <option>Pembelian & Pembayaran</option>
-                    <option>Instalasi & Download</option>
-                    <option>Akun & Login</option>
-                    <option>Refund</option>
-                    <option>Masalah In-Game</option>
-                    <option>Keamanan Akun</option>
-                    <option>Lainnya</option>
+                    <option value="">Select a category...</option>
+                    <?php foreach ($categories as $cat):
+                        $sel = (($preCategory === $cat) || (($_POST['ticket_category'] ?? '') === $cat)) ? 'selected' : '';
+                    ?>
+                    <option value="<?= $cat ?>" <?= $sel ?>><?= $cat ?></option>
+                    <?php endforeach; ?>
                 </select>
             </div>
+
             <div class="form-group">
-                <label class="form-label">Pesan</label>
-                <textarea name="ticket_message" class="form-textarea" placeholder="Jelaskan masalah kamu secara detail..."></textarea>
+                <label class="form-label">Describe your issue</label>
+                <textarea name="ticket_message" class="form-textarea" style="min-height:130px"
+                          placeholder="Please describe your issue in as much detail as possible. Include any error messages, steps you've already tried, and your device/OS information."><?= htmlspecialchars($_POST['ticket_message'] ?? '') ?></textarea>
             </div>
-            <button type="submit" class="btn btn-primary btn-block">Kirim Pesan</button>
+
+            <button type="submit" class="btn btn-primary btn-block">Send Message</button>
         </form>
     </div>
 
-    <div style="display:flex;flex-direction:column;gap:16px">
-        <div class="card" style="padding:20px">
-            <p class="text-white" style="font-weight:600;margin-bottom:6px">Live Chat</p>
-            <p class="text-secondary text-sm" style="margin-bottom:8px">Chat langsung dengan tim support kami. Tersedia setiap hari.</p>
-            <p class="text-success text-sm">Online — Rata-rata respons 5 menit</p>
+    <!-- SIDEBAR INFO -->
+    <aside class="supp-contact-sidebar">
+        <div class="supp-info-card">
+            <div class="supp-info-dot supp-info-dot--green"></div>
+            <div>
+                <div class="supp-info-title">Live Chat</div>
+                <div class="supp-info-body">Chat directly with our support team. Available every day.</div>
+                <div class="supp-info-status supp-info-status--green">Online &mdash; avg. response 5 min</div>
+            </div>
         </div>
-        <div class="card" style="padding:20px">
-            <p class="text-white" style="font-weight:600;margin-bottom:6px">Email Support</p>
-            <p class="text-secondary text-sm" style="margin-bottom:4px">support@uap.id</p>
-            <p class="text-secondary text-sm">Respons dalam 1x24 jam kerja</p>
+        <div class="supp-info-card">
+            <div class="supp-info-dot supp-info-dot--blue"></div>
+            <div>
+                <div class="supp-info-title">Email Support</div>
+                <div class="supp-info-body">support@uap.id</div>
+                <div class="supp-info-status">Response within 24 business hours</div>
+            </div>
         </div>
-        <div class="card" style="padding:20px">
-            <p class="text-white" style="font-weight:600;margin-bottom:6px">Jam Operasional</p>
-            <p class="text-secondary text-sm">Senin — Jumat: 09.00 — 21.00 WIB</p>
-            <p class="text-secondary text-sm">Sabtu — Minggu: 10.00 — 18.00 WIB</p>
+        <div class="supp-info-card">
+            <div class="supp-info-dot supp-info-dot--dim"></div>
+            <div>
+                <div class="supp-info-title">Business Hours</div>
+                <div class="supp-info-body">Mon – Fri: 09:00 – 21:00 WIB</div>
+                <div class="supp-info-status">Sat – Sun: 10:00 – 18:00 WIB</div>
+            </div>
         </div>
-    </div>
+        <div class="supp-info-card">
+            <div class="supp-info-dot supp-info-dot--gold"></div>
+            <div>
+                <div class="supp-info-title">Ticket Response Time</div>
+                <div class="supp-info-body">Most tickets are resolved within 1 business day.</div>
+                <div class="supp-info-status supp-info-status--gold">Priority support for account issues</div>
+            </div>
+        </div>
+    </aside>
+
 </div>

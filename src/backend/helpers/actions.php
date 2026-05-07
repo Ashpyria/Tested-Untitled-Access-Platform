@@ -13,7 +13,10 @@ if (isset($_GET['action']) && $_GET['action'] === 'favorite' && isLoggedIn()) {
     if ($game_id > 0) {
         toggleFavorite(getCurrentUser()['id'], $game_id);
     }
-    header('Location: /?page=library&filter=all');
+    $tab = $_GET['tab'] ?? 'all';
+    $q   = $_GET['q']   ?? '';
+    $redirect = '/?page=library&tab=' . urlencode($tab) . ($q ? '&q=' . urlencode($q) : '');
+    header('Location: ' . $redirect);
     exit;
 }
 

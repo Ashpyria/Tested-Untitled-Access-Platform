@@ -25,7 +25,7 @@ if (!in_array($page, $allowed)) $page = 'dashboard';
 </head>
 <body>
 <?php include __DIR__ . '/views/layout/sidebar.php'; ?>
-<main style="margin-left:220px;padding:32px">
+<main style="margin-left:220px;min-height:100vh;background:var(--bg-void);padding:32px">
     <?php include __DIR__ . '/views/pages/' . $page . '.php'; ?>
 </main>
 </body>

@@ -1,26 +1,74 @@
-<div style="max-width:760px">
-    <div class="card" style="padding:28px;margin-bottom:16px">
-        <h2 class="section-title">Kebijakan Refund UAP</h2>
-        <p class="text-secondary" style="line-height:1.9;margin-bottom:16px">
-            UAP memberikan kemudahan refund untuk memastikan kepuasan pembelianmu.
-            Berikut adalah syarat dan ketentuan yang berlaku.
-        </p>
-        <div style="display:flex;flex-direction:column;gap:16px">
-            <div style="border-left:3px solid var(--accent);padding-left:16px">
-                <p class="text-white" style="font-weight:600;margin-bottom:4px">Syarat Refund</p>
-                <p class="text-secondary text-sm" style="line-height:1.8">Pengajuan dilakukan dalam <strong class="text-white">14 hari</strong> setelah tanggal pembelian dan total jam bermain <strong class="text-white">kurang dari 2 jam</strong>.</p>
-            </div>
-            <div style="border-left:3px solid var(--success);padding-left:16px">
-                <p class="text-white" style="font-weight:600;margin-bottom:4px">Proses Pengembalian Dana</p>
-                <p class="text-secondary text-sm" style="line-height:1.8">Dana dikembalikan ke metode pembayaran asal dalam <strong class="text-white">3-7 hari kerja</strong> setelah refund disetujui.</p>
-            </div>
-            <div style="border-left:3px solid var(--danger);padding-left:16px">
-                <p class="text-white" style="font-weight:600;margin-bottom:4px">Tidak Dapat Direfund</p>
-                <p class="text-secondary text-sm" style="line-height:1.8">DLC, item in-game, UAP Wallet top-up, dan game yang sudah dimainkan lebih dari 2 jam tidak dapat direfund.</p>
-            </div>
+<?php
+$rules = [
+    ['color' => '#4a8a5a', 'title' => 'Eligibility',       'body' => 'Request must be submitted within <strong>14 days</strong> of purchase and total playtime must be <strong>under 2 hours</strong>.'],
+    ['color' => '#6677aa', 'title' => 'Processing Time',   'body' => 'Refund verification takes <strong>1–3 business days</strong>. Funds are returned within <strong>3–7 business days</strong> after approval.'],
+    ['color' => '#c04040', 'title' => 'Non-Refundable',    'body' => 'DLC, in-game items, UAP Wallet top-ups, and games played for <strong>more than 2 hours</strong> are not eligible for refund.'],
+    ['color' => '#a08040', 'title' => 'How to Request',    'body' => 'Click <strong>Request a Refund</strong> below, select <strong>Refund</strong> as the category, and describe your purchase. Our team will review within 1–3 business days.'],
+];
+?>
+
+<div class="supp-section-label">Refund Policy</div>
+
+<div class="supp-refund-layout">
+
+    <!-- POLICY RULES -->
+    <div style="display:flex;flex-direction:column;gap:12px">
+        <div class="supp-refund-intro">
+            UAP makes refunds easy to ensure your satisfaction with every purchase.
+            Below are the terms and conditions that apply to all refund requests.
+        </div>
+
+        <?php foreach ($rules as $rule): ?>
+        <div class="supp-refund-rule" style="border-left-color:<?= $rule['color'] ?>">
+            <div class="supp-refund-rule-title" style="color:<?= $rule['color'] ?>"><?= $rule['title'] ?></div>
+            <div class="supp-refund-rule-body"><?= $rule['body'] ?></div>
+        </div>
+        <?php endforeach; ?>
+
+        <div style="margin-top:8px">
+            <a href="/?page=support&tab=contact&cat=refund" class="btn btn-primary">Request a Refund</a>
         </div>
     </div>
-    <div class="flex-center">
-        <a href="/?page=support" onclick="switchTab(document.querySelector('.tab-btn:nth-child(3)'), 'tab-contact');return false;" class="btn btn-primary">Ajukan Refund Sekarang</a>
+
+    <!-- QUICK CHECK -->
+    <div class="supp-refund-checker">
+        <div class="supp-section-label" style="margin-bottom:16px">Quick Eligibility Check</div>
+
+        <div class="supp-check-row">
+            <span class="supp-check-icon supp-check-icon--ok">&#10003;</span>
+            <span>Purchased within the last 14 days</span>
+        </div>
+        <div class="supp-check-row">
+            <span class="supp-check-icon supp-check-icon--ok">&#10003;</span>
+            <span>Less than 2 hours of total playtime</span>
+        </div>
+        <div class="supp-check-row">
+            <span class="supp-check-icon supp-check-icon--ok">&#10003;</span>
+            <span>Full game (not DLC or in-game item)</span>
+        </div>
+        <div class="supp-check-row">
+            <span class="supp-check-icon supp-check-icon--ok">&#10003;</span>
+            <span>Not purchased with promotional credit</span>
+        </div>
+
+        <div style="border-top:1px solid var(--border);margin:16px 0"></div>
+
+        <div class="supp-check-row">
+            <span class="supp-check-icon supp-check-icon--no">&#10007;</span>
+            <span>More than 2 hours played — not eligible</span>
+        </div>
+        <div class="supp-check-row">
+            <span class="supp-check-icon supp-check-icon--no">&#10007;</span>
+            <span>Purchase older than 14 days — not eligible</span>
+        </div>
+        <div class="supp-check-row">
+            <span class="supp-check-icon supp-check-icon--no">&#10007;</span>
+            <span>DLC or in-game items — not eligible</span>
+        </div>
+
+        <a href="/?page=support&tab=contact&cat=refund" class="btn btn-outline btn-sm btn-block" style="margin-top:20px">
+            Submit Refund Request &rsaquo;
+        </a>
     </div>
+
 </div>

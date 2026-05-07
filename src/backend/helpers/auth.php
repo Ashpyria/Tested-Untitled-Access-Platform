@@ -24,6 +24,7 @@ function loginUser($user) {
 
 function logoutUser() {
     startSession();
+    $_SESSION = [];
     session_destroy();
 }
 

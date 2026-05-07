@@ -89,7 +89,7 @@ function getLibraryGenres($user_id) {
     return $stmt->fetchAll(PDO::FETCH_COLUMN);
 }
 
-function getGamesByGenre($user_id, $genre) {
+function getLibraryGamesByGenre($user_id, $genre) {
     $pdo  = getDB();
     $stmt = $pdo->prepare('
         SELECT g.*, l.hours_played, l.is_installed, l.is_favorite, l.purchased_at

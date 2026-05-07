@@ -6,7 +6,7 @@ function getAllPosts($category = null) {
     $pdo = getDB();
     if ($category) {
         $stmt = $pdo->prepare('
-            SELECT p.*, u.username,
+            SELECT p.*, u.username, u.avatar,
             (SELECT COUNT(*) FROM post_replies WHERE post_id = p.id) as reply_count
             FROM posts p
             JOIN users u ON p.user_id = u.id
@@ -16,7 +16,7 @@ function getAllPosts($category = null) {
         $stmt->execute([$category]);
     } else {
         $stmt = $pdo->query('
-            SELECT p.*, u.username,
+            SELECT p.*, u.username, u.avatar,
             (SELECT COUNT(*) FROM post_replies WHERE post_id = p.id) as reply_count
             FROM posts p
             JOIN users u ON p.user_id = u.id
@@ -36,7 +36,7 @@ function createPost($user_id, $title, $content, $category) {
 function getAllReviews() {
     $pdo = getDB();
     return $pdo->query('
-        SELECT r.*, u.username, g.title as game_title, l.hours_played
+        SELECT r.*, u.username, u.avatar, g.title as game_title, l.hours_played
         FROM reviews r
         JOIN users u ON r.user_id = u.id
         JOIN games g ON r.game_id = g.id

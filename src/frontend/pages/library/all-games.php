@@ -20,7 +20,7 @@
                 <a href="/?action=favorite&game_id=<?= $game['id'] ?>&filter=<?= $filter ?>"
                    title="<?= $game['is_favorite'] ? 'Remove from Favorites' : 'Add to Favorites' ?>"
                    style="color:<?= $game['is_favorite'] ? '#b8a060' : 'var(--text-secondary)' ?>;font-size:16px">
-                   <?= $game['is_favorite'] ? '★' : '☆' ?>
+                   <?= $game['is_favorite'] ? 'Saved' : 'Save' ?>
                 </a>
             </div>
             <p class="game-card-genre"><?= $game['hours_played'] ?> hours played</p>

@@ -8,8 +8,6 @@ if (!$game) {
 }
 
 $discounted = $game['discount'] > 0 ? $game['price'] * (1 - $game['discount'] / 100) : null;
-$reviews    = getAllReviews();
-$gameReviews = array_filter($reviews, fn($r) => $r['game_id'] === $game['id']);
 $inCart     = isLoggedIn() ? isInCart(getCurrentUser()['id'], $game['id']) : false;
 $inLibrary  = false;
 if (isLoggedIn()) {
@@ -18,6 +16,23 @@ if (isLoggedIn()) {
     $stmt = $pdo->prepare('SELECT id FROM library WHERE user_id = ? AND game_id = ?');
     $stmt->execute([getCurrentUser()['id'], $game['id']]);
     $inLibrary = (bool)$stmt->fetch();
+}
+
+// Fetch reviews for this specific game
+$gameReviews = [];
+try {
+    $pdo  = getDB();
+    $stmt = $pdo->prepare('
+        SELECT r.*, u.username
+        FROM reviews r
+        JOIN users u ON r.user_id = u.id
+        WHERE r.game_id = ?
+        ORDER BY r.created_at DESC
+    ');
+    $stmt->execute([$game['id']]);
+    $gameReviews = $stmt->fetchAll();
+} catch (Exception $e) {
+    $gameReviews = [];
 }
 ?>
 
@@ -174,7 +189,7 @@ if (isLoggedIn()) {
                 <div class="flex-between" style="margin-bottom:6px">
                     <span class="text-white" style="font-weight:600"><?= htmlspecialchars($review['username']) ?></span>
                     <span class="tag <?= $review['rating'] >= 4 ? 'tag-green' : ($review['rating'] >= 3 ? 'tag-warning' : 'tag-danger') ?>">
-                        ★ <?= $review['rating'] ?>/5
+                        <?= $review['rating'] ?>/5
                     </span>
                 </div>
                 <p class="text-secondary text-sm" style="line-height:1.7"><?= htmlspecialchars($review['content']) ?></p>

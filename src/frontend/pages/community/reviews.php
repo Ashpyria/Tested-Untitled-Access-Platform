@@ -1,76 +1,90 @@
 <?php
-if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['action'] === 'create_review' && isLoggedIn()) {
-    $game_id = (int)($_POST['game_id'] ?? 0);
-    $rating  = (int)($_POST['rating'] ?? 5);
-    $content = trim($_POST['content'] ?? '');
-    if ($game_id && $content) {
-        createReview(getCurrentUser()['id'], $game_id, $rating, $content);
-        header('Location: /?page=community&tab=reviews');
-        exit;
-    }
-}
-
-$userGames = isLoggedIn() ? getUserLibrary(getCurrentUser()['id']) : [];
+$ratingLabels = [5 => 'Masterpiece', 4 => 'Great', 3 => 'Good', 2 => 'Mixed', 1 => 'Poor'];
+$ratingColors = [5 => '#4a8a5a', 4 => '#4a8a5a', 3 => '#a08040', 2 => '#a08040', 1 => '#c04040'];
 ?>
 
-<!-- Write Review Form -->
+<!-- WRITE REVIEW FORM -->
 <?php if (isLoggedIn() && !empty($userGames)): ?>
-<div class="card" style="padding:20px;margin-bottom:24px">
-    <h2 class="section-title">Tulis Review</h2>
+<div class="comm-compose" style="margin-bottom:16px">
+    <?php $cu = getCurrentUser();
+          $cc = ['#b83232','#6677aa','#4a8a5a','#a08040','#7a6699'];
+          $col = $cc[crc32($cu['username']) % count($cc)];
+          $cuAvatar = $cu['avatar'] ?? null;
+          $cuHasAvatar = $cuAvatar && file_exists(__DIR__ . '/../../../../public/assets/images/avatars/' . $cuAvatar); ?>
+    <div style="display:flex;align-items:center;gap:12px;margin-bottom:16px">
+        <?php if ($cuHasAvatar): ?>
+        <img src="/assets/images/avatars/<?= htmlspecialchars($cuAvatar) ?>"
+             class="comm-avatar" style="object-fit:cover;border-color:<?= $col ?>44">
+        <?php else: ?>
+        <div class="comm-avatar" style="background:<?= $col ?>22;border-color:<?= $col ?>55;color:<?= $col ?>">
+            <?= mb_strtoupper(mb_substr($cu['username'], 0, 2)) ?>
+        </div>
+        <?php endif; ?>
+        <span style="font-family:'Monda',sans-serif;font-size:13px;font-weight:600;color:var(--text-primary)"><?= htmlspecialchars($cu['username']) ?></span>
+    </div>
     <form method="POST">
         <input type="hidden" name="action" value="create_review">
-        <div class="form-group">
-            <label class="form-label">Game</label>
+        <div style="display:grid;grid-template-columns:1fr auto;gap:8px;margin-bottom:10px">
             <select name="game_id" class="form-select">
                 <?php foreach ($userGames as $g): ?>
                 <option value="<?= $g['id'] ?>"><?= htmlspecialchars($g['title']) ?></option>
                 <?php endforeach; ?>
             </select>
-        </div>
-        <div class="form-group">
-            <label class="form-label">Rating</label>
-            <select name="rating" class="form-select">
+            <select name="rating" class="form-select" style="width:120px">
                 <?php for ($i = 5; $i >= 1; $i--): ?>
-                <option value="<?= $i ?>"><?= $i ?> / 5</option>
+                <option value="<?= $i ?>"><?= $i ?>/5 — <?= $ratingLabels[$i] ?></option>
                 <?php endfor; ?>
             </select>
         </div>
-        <div class="form-group">
-            <label class="form-label">Review</label>
-            <textarea name="content" class="form-textarea" placeholder="Tulis reviewmu..."></textarea>
+        <textarea name="content" class="form-textarea" placeholder="Share your thoughts about this game..." style="min-height:80px;margin-bottom:10px"></textarea>
+        <div style="display:flex;justify-content:flex-end">
+            <button type="submit" class="btn btn-primary btn-sm">Submit Review</button>
         </div>
-        <button type="submit" class="btn btn-primary">Submit Review</button>
     </form>
 </div>
 <?php endif; ?>
 
-<!-- Reviews List -->
+<!-- REVIEWS LIST -->
 <?php if (empty($reviews)): ?>
-<div class="card" style="padding:40px;text-align:center">
-    <p class="text-secondary">Belum ada review.</p>
+<div style="padding:48px;text-align:center;background:var(--bg-card);border:1px solid var(--border)">
+    <p class="text-secondary">No reviews yet. Be the first to review a game!</p>
 </div>
 <?php else: ?>
-<div style="display:flex;flex-direction:column;gap:16px">
-    <?php foreach ($reviews as $review): ?>
-    <div class="card" style="padding:20px">
-        <div class="flex-between mb-16">
-            <div class="flex-gap">
-                <div style="width:40px;height:40px;background:var(--bg-secondary);border:2px solid var(--accent);flex-shrink:0"></div>
-                <div>
-                    <p class="text-white" style="font-weight:600"><?= htmlspecialchars($review['username']) ?></p>
-                    <p class="text-secondary text-sm">
-                        <?= htmlspecialchars($review['game_title']) ?>
-                        <?php if ($review['hours_played']): ?>
-                        &bull; <?= $review['hours_played'] ?> jam dimainkan
-                        <?php endif; ?>
-                    </p>
-                </div>
+<div style="display:flex;flex-direction:column;gap:8px">
+    <?php foreach ($reviews as $review):
+        $ucolors    = ['#b83232','#6677aa','#4a8a5a','#a08040','#7a6699'];
+        $ucol       = $ucolors[crc32($review['username']) % count($ucolors)];
+        $rating     = (int)$review['rating'];
+        $rColor     = $ratingColors[$rating] ?? '#a08040';
+        $rLabel     = $ratingLabels[$rating] ?? '';
+        $avatarFile = $review['avatar'] ?? null;
+        $hasAvatar  = $avatarFile && file_exists(__DIR__ . '/../../../../public/assets/images/avatars/' . $avatarFile);
+    ?>
+    <div class="comm-post-card">
+        <div class="comm-post-top">
+            <?php if ($hasAvatar): ?>
+            <img src="/assets/images/avatars/<?= htmlspecialchars($avatarFile) ?>"
+                 class="comm-avatar" style="object-fit:cover;border-color:<?= $ucol ?>44">
+            <?php else: ?>
+            <div class="comm-avatar" style="background:<?= $ucol ?>22;border-color:<?= $ucol ?>55;color:<?= $ucol ?>">
+                <?= mb_strtoupper(mb_substr($review['username'], 0, 2)) ?>
             </div>
-            <p class="text-warning" style="font-weight:700"><?= $review['rating'] ?> / 5</p>
+            <?php endif; ?>
+            <div class="comm-post-meta">
+                <span class="comm-post-author"><?= htmlspecialchars($review['username']) ?></span>
+                <span class="comm-post-time">
+                    <?= htmlspecialchars($review['game_title']) ?>
+                    <?php if ($review['hours_played']): ?>&middot; <?= number_format($review['hours_played']) ?> hrs<?php endif; ?>
+                    &middot; <?= timeAgo($review['created_at']) ?>
+                </span>
+            </div>
+            <div style="display:flex;align-items:center;gap:6px;flex-shrink:0">
+                <span style="font-family:'Monda',sans-serif;font-size:16px;font-weight:900;color:<?= $rColor ?>"><?= $rating ?><span style="font-size:11px;color:var(--text-dim)">/5</span></span>
+                <span style="font-family:'Monda',sans-serif;font-size:10px;font-weight:700;color:<?= $rColor ?>;background:<?= $rColor ?>22;border:1px solid <?= $rColor ?>44;padding:2px 8px"><?= $rLabel ?></span>
+            </div>
         </div>
-        <p class="text-primary" style="line-height:1.8"><?= htmlspecialchars($review['content']) ?></p>
-        <div class="flex-gap mt-16">
-            <span class="text-secondary text-sm"><?= timeAgo($review['created_at']) ?></span>
+        <div class="comm-post-body">
+            <p class="comm-post-content" style="font-size:13px"><?= htmlspecialchars($review['content']) ?></p>
         </div>
     </div>
     <?php endforeach; ?>

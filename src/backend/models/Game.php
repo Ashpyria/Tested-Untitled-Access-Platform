@@ -27,6 +27,13 @@ function getFreeGames() {
     return $pdo->query('SELECT * FROM games WHERE is_free = 1')->fetchAll();
 }
 
+function getGamesByGenre($genre) {
+    $pdo  = getDB();
+    $stmt = $pdo->prepare('SELECT * FROM games WHERE genre = ? ORDER BY created_at DESC');
+    $stmt->execute([$genre]);
+    return $stmt->fetchAll();
+}
+
 function getGameById($id) {
     $pdo  = getDB();
     $stmt = $pdo->prepare('SELECT * FROM games WHERE id = ?');

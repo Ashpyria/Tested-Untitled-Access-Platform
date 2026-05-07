@@ -43,6 +43,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 
     if ($_POST['action'] === 'edit_game') {
+        $oldStmt = $pdo->prepare('SELECT image FROM games WHERE id = ?');
+        $oldStmt->execute([(int)$_POST['game_id']]);
+        $oldImage = $oldStmt->fetchColumn();
+        $image = handleImageUpload($_FILES['image'] ?? null, $oldImage);
+
         $stmt = $pdo->prepare('UPDATE games SET title=?, description=?, genre=?, price=?, discount=?, is_free=?, release_date=?, image=?, req_os=?, req_processor=?, req_memory=?, req_graphics=?, req_storage=? WHERE id=?');
         $stmt->execute([
             trim($_POST['title']),
