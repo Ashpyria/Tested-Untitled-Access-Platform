@@ -1,4 +1,5 @@
 <?php
+ob_start();
 require_once __DIR__ . '/../../src/backend/helpers/auth.php';
 require_once __DIR__ . '/../../src/backend/config/database.php';
 startSession();

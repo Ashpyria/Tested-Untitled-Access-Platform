@@ -40,3 +40,36 @@ function getGameById($id) {
     $stmt->execute([$id]);
     return $stmt->fetch();
 }
+
+function getGameImages($game_id) {
+    try {
+        $pdo  = getDB();
+        $stmt = $pdo->prepare('SELECT * FROM game_images WHERE game_id = ? ORDER BY sort_order ASC, id ASC');
+        $stmt->execute([(int)$game_id]);
+        return $stmt->fetchAll();
+    } catch (Exception $e) {
+        return [];
+    }
+}
+
+function addGameImage($game_id, $filename, $sort_order = 0) {
+    try {
+        $pdo  = getDB();
+        $stmt = $pdo->prepare('INSERT INTO game_images (game_id, filename, sort_order) VALUES (?, ?, ?)');
+        $stmt->execute([(int)$game_id, $filename, (int)$sort_order]);
+    } catch (Exception $e) {}
+}
+
+function deleteGameImage($image_id, $game_id) {
+    try {
+        $pdo  = getDB();
+        $stmt = $pdo->prepare('SELECT filename FROM game_images WHERE id = ? AND game_id = ?');
+        $stmt->execute([(int)$image_id, (int)$game_id]);
+        $img  = $stmt->fetchColumn();
+        if ($img) {
+            $path = __DIR__ . '/../../../public/uploads/games/' . $img;
+            if (file_exists($path)) unlink($path);
+            $pdo->prepare('DELETE FROM game_images WHERE id = ?')->execute([(int)$image_id]);
+        }
+    } catch (Exception $e) {}
+}

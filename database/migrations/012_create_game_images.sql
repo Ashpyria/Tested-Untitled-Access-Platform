@@ -1,0 +1,8 @@
+CREATE TABLE IF NOT EXISTS game_images (
+    id         INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+    game_id    INT UNSIGNED NOT NULL,
+    filename   VARCHAR(255) NOT NULL,
+    sort_order INT DEFAULT 0,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (game_id) REFERENCES games(id) ON DELETE CASCADE
+);

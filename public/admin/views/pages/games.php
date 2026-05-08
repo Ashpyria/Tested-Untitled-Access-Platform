@@ -39,14 +39,29 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             trim($_POST['req_graphics'] ?? ''),
             trim($_POST['req_storage'] ?? ''),
         ]);
-
+        $newId = $pdo->lastInsertId();
+        // Upload screenshots
+        if (!empty($_FILES['screenshots']['name'][0])) {
+            try {
+                foreach ($_FILES['screenshots']['tmp_name'] as $i => $tmp) {
+                    if ($_FILES['screenshots']['error'][$i] !== UPLOAD_ERR_OK) continue;
+                    $ext = strtolower(pathinfo($_FILES['screenshots']['name'][$i], PATHINFO_EXTENSION));
+                    if (!in_array($ext, ['jpg','jpeg','png','webp'])) continue;
+                    $fn = uniqid('shot_') . '.' . $ext;
+                    if (move_uploaded_file($tmp, __DIR__ . '/../../../../public/uploads/games/' . $fn)) {
+                        $pdo->prepare('INSERT INTO game_images (game_id, filename, sort_order) VALUES (?, ?, ?)')->execute([$newId, $fn, $i]);
+                    }
+                }
+            } catch (Exception $e) {}
+        }
         header('Location: /admin/?page=games');
         exit;
     }
 
     if ($_POST['action'] === 'edit_game') {
+        $gid = (int)$_POST['game_id'];
         $oldStmt = $pdo->prepare('SELECT image FROM games WHERE id = ?');
-        $oldStmt->execute([(int)$_POST['game_id']]);
+        $oldStmt->execute([$gid]);
         $oldImage = $oldStmt->fetchColumn();
         $image = handleImageUpload($_FILES['image'] ?? null, $oldImage);
 
@@ -67,10 +82,42 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             trim($_POST['req_memory'] ?? ''),
             trim($_POST['req_graphics'] ?? ''),
             trim($_POST['req_storage'] ?? ''),
-            (int)$_POST['game_id'],
+            $gid,
         ]);
+        // Upload new screenshots
+        if (!empty($_FILES['screenshots']['name'][0])) {
+            try {
+                $maxStmt = $pdo->prepare('SELECT COALESCE(MAX(sort_order),0) FROM game_images WHERE game_id = ?');
+                $maxStmt->execute([$gid]);
+                $maxOrder = (int)$maxStmt->fetchColumn();
+                foreach ($_FILES['screenshots']['tmp_name'] as $i => $tmp) {
+                    if ($_FILES['screenshots']['error'][$i] !== UPLOAD_ERR_OK) continue;
+                    $ext = strtolower(pathinfo($_FILES['screenshots']['name'][$i], PATHINFO_EXTENSION));
+                    if (!in_array($ext, ['jpg','jpeg','png','webp'])) continue;
+                    $fn = uniqid('shot_') . '.' . $ext;
+                    if (move_uploaded_file($tmp, __DIR__ . '/../../../../public/uploads/games/' . $fn)) {
+                        $pdo->prepare('INSERT INTO game_images (game_id, filename, sort_order) VALUES (?, ?, ?)')->execute([$gid, $fn, $maxOrder + $i + 1]);
+                    }
+                }
+            } catch (Exception $e) {}
+        }
+        header('Location: /admin/?page=games&edit=' . $gid . '&saved=1');
+        exit;
+    }
 
-        header('Location: /admin/?page=games');
+    if ($_POST['action'] === 'delete_screenshot') {
+        $imgId = (int)($_POST['image_id'] ?? 0);
+        $gid   = (int)($_POST['game_id']  ?? 0);
+        if ($imgId && $gid) {
+            try {
+                $s = $pdo->prepare('SELECT filename FROM game_images WHERE id = ? AND game_id = ?');
+                $s->execute([$imgId, $gid]);
+                $fn = $s->fetchColumn();
+                if ($fn && file_exists(__DIR__ . '/../../../../public/uploads/games/' . $fn)) unlink(__DIR__ . '/../../../../public/uploads/games/' . $fn);
+                $pdo->prepare('DELETE FROM game_images WHERE id = ?')->execute([$imgId]);
+            } catch (Exception $e) {}
+        }
+        header('Location: /admin/?page=games&edit=' . $gid);
         exit;
     }
 
@@ -89,13 +136,22 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
 
 $editGame = null;
+$editScreenshots = [];
 if (isset($_GET['edit'])) {
     $stmt = $pdo->prepare('SELECT * FROM games WHERE id = ?');
     $stmt->execute([(int)$_GET['edit']]);
     $editGame = $stmt->fetch();
+    if ($editGame) {
+        try {
+            $ss = $pdo->prepare('SELECT * FROM game_images WHERE game_id = ? ORDER BY sort_order ASC, id ASC');
+            $ss->execute([$editGame['id']]);
+            $editScreenshots = $ss->fetchAll();
+        } catch (Exception $e) { $editScreenshots = []; }
+    }
 }
 
 $games = $pdo->query('SELECT * FROM games ORDER BY created_at DESC')->fetchAll();
+$savedMsg = isset($_GET['saved']) ? 'Game updated successfully.' : '';
 ?>
 
 <div class="flex-between mb-24">
@@ -189,7 +245,29 @@ $games = $pdo->query('SELECT * FROM games ORDER BY created_at DESC')->fetchAll()
 
         <div class="form-group">
             <label class="form-label">Description</label>
-            <textarea name="description" class="form-textarea"><?= htmlspecialchars($editGame['description'] ?? '') ?></textarea>
+            <textarea name="description" class="form-textarea" rows="8" style="min-height:160px"><?= htmlspecialchars($editGame['description'] ?? '') ?></textarea>
+        </div>
+
+        <!-- Screenshots -->
+        <div class="form-group" style="margin-top:8px">
+            <label class="form-label">Screenshots <span style="color:var(--text-dim);font-weight:400">(multiple files allowed)</span></label>
+            <?php if (!empty($editScreenshots)): ?>
+            <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:8px;margin-bottom:12px">
+                <?php foreach ($editScreenshots as $ss): ?>
+                <div style="position:relative">
+                    <img src="/uploads/games/<?= htmlspecialchars($ss['filename']) ?>"
+                         style="width:100%;height:88px;object-fit:cover;border:1px solid var(--border)">
+                    <form method="POST" style="position:absolute;top:4px;right:4px" onsubmit="return confirm('Delete this screenshot?')">
+                        <input type="hidden" name="action"   value="delete_screenshot">
+                        <input type="hidden" name="image_id" value="<?= $ss['id'] ?>">
+                        <input type="hidden" name="game_id"  value="<?= $editGame['id'] ?>">
+                        <button type="submit" style="background:rgba(0,0,0,0.7);border:none;color:#fff;cursor:pointer;font-size:11px;padding:2px 6px">x</button>
+                    </form>
+                </div>
+                <?php endforeach; ?>
+            </div>
+            <?php endif; ?>
+            <input type="file" name="screenshots[]" class="form-input" accept="image/*" multiple>
         </div>
 
         <div class="flex-gap">
