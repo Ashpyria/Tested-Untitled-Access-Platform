@@ -30,14 +30,22 @@ $genre  = $_GET['genre']  ?? '';
             </a>
             <p class="game-card-genre"><?= htmlspecialchars($game['genre']) ?></p>
             <div class="game-card-price">
-                <?php if ($game['is_free']): ?>
-                    <span class="price-free">Free</span>
-                <?php elseif ($discounted): ?>
-                    <span class="price-discount">-<?= $game['discount'] ?>%</span>
-                    <span class="price-tag">Rp <?= number_format($discounted, 0, ',', '.') ?></span>
-                <?php else: ?>
-                    <span class="price-tag">Rp <?= number_format($game['price'], 0, ',', '.') ?></span>
-                <?php endif; ?>
+                <div>
+                    <?php if ($game['is_free']): ?>
+                        <span class="price-discount" style="background:rgba(74,138,90,0.15);color:var(--accent-green);border-color:rgba(74,138,90,0.3)">FREE</span>
+                    <?php elseif ($discounted): ?>
+                        <span class="price-discount">-<?= $game['discount'] ?>%</span>
+                    <?php endif; ?>
+                </div>
+                <div>
+                    <?php if ($game['is_free']): ?>
+                        <span class="price-free">Free</span>
+                    <?php elseif ($discounted): ?>
+                        <span class="price-tag">Rp <?= number_format($discounted, 0, ',', '.') ?></span>
+                    <?php else: ?>
+                        <span class="price-tag">Rp <?= number_format($game['price'], 0, ',', '.') ?></span>
+                    <?php endif; ?>
+                </div>
             </div>
             <div class="mt-8">
                 <?php if (isLoggedIn()): ?>

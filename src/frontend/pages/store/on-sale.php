@@ -55,8 +55,12 @@ $dealOfDay = $saleGames[0] ?? null;
             </a>
             <p class="game-card-genre"><?= htmlspecialchars($game['genre']) ?></p>
             <div class="game-card-price">
-                <span class="price-discount">-<?= $game['discount'] ?>%</span>
-                <span class="price-tag">Rp <?= number_format($discounted, 0, ',', '.') ?></span>
+                <div>
+                    <span class="price-discount">-<?= $game['discount'] ?>%</span>
+                </div>
+                <div>
+                    <span class="price-tag">Rp <?= number_format($discounted, 0, ',', '.') ?></span>
+                </div>
             </div>
             <div class="mt-8">
                 <?php if (isLoggedIn()): ?>

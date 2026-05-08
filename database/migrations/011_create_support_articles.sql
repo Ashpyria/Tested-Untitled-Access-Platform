@@ -1,0 +1,8 @@
+CREATE TABLE IF NOT EXISTS support_articles (
+    id         INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+    category   VARCHAR(80)  NOT NULL,
+    title      VARCHAR(255) NOT NULL,
+    content    TEXT NOT NULL,
+    views      INT UNSIGNED DEFAULT 0,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);

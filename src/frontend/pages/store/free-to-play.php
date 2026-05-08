@@ -17,7 +17,12 @@
             </a>
             <p class="game-card-genre"><?= htmlspecialchars($game['genre']) ?></p>
             <div class="game-card-price">
-                <span class="price-free">Free to Play</span>
+                <div>
+                    <span class="price-discount" style="background:rgba(74,138,90,0.15);color:var(--accent-green);border-color:rgba(74,138,90,0.3)">FREE</span>
+                </div>
+                <div>
+                    <span class="price-free">Free</span>
+                </div>
             </div>
             <div class="mt-8">
                 <?php if (isLoggedIn()): ?>

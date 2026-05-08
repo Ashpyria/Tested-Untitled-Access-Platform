@@ -21,7 +21,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     if ($_POST['action'] === 'add_game') {
         $image = handleImageUpload($_FILES['image'] ?? null);
-        $stmt  = $pdo->prepare('INSERT INTO games (title, description, genre, price, discount, is_free, release_date, image, req_os, req_processor, req_memory, req_graphics, req_storage) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)');
+        $stmt  = $pdo->prepare('INSERT INTO games (title, description, genre, price, discount, is_free, release_date, image, developer, publisher, req_os, req_processor, req_memory, req_graphics, req_storage) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)');
         $stmt->execute([
             trim($_POST['title']),
             trim($_POST['description']),
@@ -31,6 +31,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             isset($_POST['is_free']) ? 1 : 0,
             $_POST['release_date'] ?: null,
             $image,
+            trim($_POST['developer'] ?? ''),
+            trim($_POST['publisher'] ?? ''),
             trim($_POST['req_os'] ?? ''),
             trim($_POST['req_processor'] ?? ''),
             trim($_POST['req_memory'] ?? ''),
@@ -48,7 +50,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $oldImage = $oldStmt->fetchColumn();
         $image = handleImageUpload($_FILES['image'] ?? null, $oldImage);
 
-        $stmt = $pdo->prepare('UPDATE games SET title=?, description=?, genre=?, price=?, discount=?, is_free=?, release_date=?, image=?, req_os=?, req_processor=?, req_memory=?, req_graphics=?, req_storage=? WHERE id=?');
+        $stmt = $pdo->prepare('UPDATE games SET title=?, description=?, genre=?, price=?, discount=?, is_free=?, release_date=?, image=?, developer=?, publisher=?, req_os=?, req_processor=?, req_memory=?, req_graphics=?, req_storage=? WHERE id=?');
         $stmt->execute([
             trim($_POST['title']),
             trim($_POST['description']),
@@ -58,6 +60,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             isset($_POST['is_free']) ? 1 : 0,
             $_POST['release_date'] ?: null,
             $image,
+            trim($_POST['developer'] ?? ''),
+            trim($_POST['publisher'] ?? ''),
             trim($_POST['req_os'] ?? ''),
             trim($_POST['req_processor'] ?? ''),
             trim($_POST['req_memory'] ?? ''),
@@ -133,6 +137,16 @@ $games = $pdo->query('SELECT * FROM games ORDER BY created_at DESC')->fetchAll()
                 <input type="date" name="release_date" class="form-input" value="<?= $editGame['release_date'] ?? '' ?>">
             </div>
             
+            <div class="form-group">
+                <label class="form-label">Developer</label>
+                <input type="text" name="developer" class="form-input" placeholder="e.g. CD Projekt Red" value="<?= htmlspecialchars($editGame['developer'] ?? '') ?>">
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">Publisher</label>
+                <input type="text" name="publisher" class="form-input" placeholder="e.g. CD Projekt" value="<?= htmlspecialchars($editGame['publisher'] ?? '') ?>">
+            </div>
+
             <div class="form-group">
                 <label class="form-label">OS</label>
                 <input type="text" name="req_os" class="form-input" placeholder="Windows 10/11 64-bit" value="<?= htmlspecialchars($editGame['req_os'] ?? '') ?>">

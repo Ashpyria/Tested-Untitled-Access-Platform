@@ -18,15 +18,23 @@
             </a>
             <p class="game-card-genre"><?= htmlspecialchars($game['genre']) ?></p>
             <div class="game-card-price">
-                <?php if ($game['is_free']): ?>
-                    <span class="price-free">Free</span>
-                <?php elseif ($discounted): ?>
-                    <span class="price-discount">-<?= $game['discount'] ?>%</span>
-                    <span class="price-tag">Rp <?= number_format($discounted, 0, ',', '.') ?></span>
-                <?php else: ?>
-                    <span class="price-tag">Rp <?= number_format($game['price'], 0, ',', '.') ?></span>
-                <?php endif; ?>
-                    <span class="tag tag-danger" style="font-size:10px">New</span>
+                <div style="display:flex;gap:4px;align-items:center">
+                    <span class="price-discount" style="background:rgba(184,50,50,0.15);color:var(--accent);border-color:rgba(184,50,50,0.3)">NEW</span>
+                    <?php if ($game['is_free']): ?>
+                        <span class="price-discount" style="background:rgba(74,138,90,0.15);color:var(--accent-green);border-color:rgba(74,138,90,0.3)">FREE</span>
+                    <?php elseif ($discounted): ?>
+                        <span class="price-discount">-<?= $game['discount'] ?>%</span>
+                    <?php endif; ?>
+                </div>
+                <div>
+                    <?php if ($game['is_free']): ?>
+                        <span class="price-free">Free</span>
+                    <?php elseif ($discounted): ?>
+                        <span class="price-tag">Rp <?= number_format($discounted, 0, ',', '.') ?></span>
+                    <?php else: ?>
+                        <span class="price-tag">Rp <?= number_format($game['price'], 0, ',', '.') ?></span>
+                    <?php endif; ?>
+                </div>
             </div>
             <div class="mt-8">
                 <?php if (isLoggedIn()): ?>

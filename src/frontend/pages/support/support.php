@@ -28,6 +28,33 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && ($_POST['action'] ?? '') === 'send_
 $tab = $_GET['tab'] ?? '';
 $q   = trim($_GET['q'] ?? '');
 if ($q && $tab === '') $tab = 'faq';
+
+// Load data per tab
+$currentArticle   = null;
+$categoryArticles = [];
+$popularArticles  = [];
+
+if ($tab === 'article') {
+    $artId = (int)($_GET['id'] ?? 0);
+    try {
+        $currentArticle = $artId ? getArticleById($artId) : null;
+        if ($currentArticle) incrementArticleViews($artId);
+    } catch (Exception $e) { $currentArticle = null; }
+
+} elseif ($tab === 'articles') {
+    $artCat = $_GET['cat'] ?? '';
+    try {
+        $categoryArticles = $artCat ? getArticlesByCategory($artCat) : [];
+    } catch (Exception $e) { $categoryArticles = []; }
+
+} elseif ($tab === '') {
+    try {
+        $popularArticles = getPopularArticles(5);
+    } catch (Exception $e) { $popularArticles = []; }
+}
+
+// Tab active state: article/articles highlight Help Center tab
+$activeTab = in_array($tab, ['article', 'articles']) ? '' : $tab;
 ?>
 
 <!-- PAGE HEADER -->
@@ -57,10 +84,10 @@ if ($q && $tab === '') $tab = 'faq';
 
 <!-- TABS -->
 <nav class="supp-tabs">
-    <a href="/?page=support"              class="supp-tab <?= $tab === ''       ? 'active' : '' ?>">Help Center</a>
-    <a href="/?page=support&tab=faq"      class="supp-tab <?= $tab === 'faq'    ? 'active' : '' ?>">FAQ</a>
-    <a href="/?page=support&tab=contact"  class="supp-tab <?= $tab === 'contact'? 'active' : '' ?>">Contact Us</a>
-    <a href="/?page=support&tab=refund"   class="supp-tab <?= $tab === 'refund' ? 'active' : '' ?>">Refund Policy</a>
+    <a href="/?page=support"              class="supp-tab <?= $activeTab === ''        ? 'active' : '' ?>">Help Center</a>
+    <a href="/?page=support&tab=faq"      class="supp-tab <?= $activeTab === 'faq'     ? 'active' : '' ?>">FAQ</a>
+    <a href="/?page=support&tab=contact"  class="supp-tab <?= $activeTab === 'contact' ? 'active' : '' ?>">Contact Us</a>
+    <a href="/?page=support&tab=refund"   class="supp-tab <?= $activeTab === 'refund'  ? 'active' : '' ?>">Refund Policy</a>
 </nav>
 
 <!-- CONTENT -->
@@ -70,6 +97,10 @@ if ($q && $tab === '') $tab = 'faq';
     <?php include __DIR__ . '/contact.php'; ?>
 <?php elseif ($tab === 'refund'): ?>
     <?php include __DIR__ . '/refund.php'; ?>
+<?php elseif ($tab === 'article'): ?>
+    <?php include __DIR__ . '/article.php'; ?>
+<?php elseif ($tab === 'articles'): ?>
+    <?php include __DIR__ . '/articles.php'; ?>
 <?php else: ?>
     <?php include __DIR__ . '/help-home.php'; ?>
 <?php endif; ?>
