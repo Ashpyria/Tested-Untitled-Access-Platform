@@ -78,16 +78,16 @@
 
 /* Green — add to cart / get free */
 .btn-green {
-    background: rgba(34, 197, 94, 0.12);
-    color: var(--accent-green);
-    border: 1px solid rgba(34, 197, 94, 0.30);
+    background: rgba(184, 50, 50, 0.12);
+    color: var(--accent);
+    border: 1px solid rgba(184, 50, 50, 0.30);
 }
 .btn-green:hover {
-    background: rgba(34, 197, 94, 0.22);
-    color: #4ade80;
-    border-color: rgba(34, 197, 94, 0.50);
+    background: rgba(184, 50, 50, 0.22);
+    color: #e06060;
+    border-color: rgba(184, 50, 50, 0.50);
     transform: translateY(-1px);
-    box-shadow: 0 6px 20px rgba(34, 197, 94, 0.20);
+    box-shadow: 0 6px 20px rgba(184, 50, 50, 0.20);
 }
 
 /* Outline */
@@ -272,7 +272,7 @@
     font-family: 'Monda', sans-serif;
     font-size: 13px;
     font-weight: 700;
-    color: var(--accent);
+    color: var(--text-white);
     letter-spacing: 0.02em;
 }
 
@@ -1619,18 +1619,18 @@
     font-family: 'Monda', sans-serif;
 }
 
-/* Hero CTA button — brighter than default btn-primary */
+/* Hero CTA button — matches btn-primary */
 .btn-hero-cta {
-    background: #ffffff;
-    color: #0e0e11;
-    font-weight: 700;
-    box-shadow: 0 4px 24px rgba(0,0,0,0.4);
+    background: rgba(184, 50, 50, 0.12);
+    color: var(--accent);
+    border: 1px solid rgba(184, 50, 50, 0.30);
 }
 .btn-hero-cta:hover {
-    background: var(--accent-light);
-    color: #0e0e11;
+    background: rgba(184, 50, 50, 0.22);
+    color: #e06060;
+    border-color: rgba(184, 50, 50, 0.50);
     transform: translateY(-1px);
-    box-shadow: 0 8px 32px rgba(0,0,0,0.5);
+    box-shadow: 0 6px 20px rgba(184, 50, 50, 0.20);
 }
 
 /* Price display in hero */
@@ -1644,7 +1644,7 @@
     font-family: 'Monda', sans-serif;
     font-size: 20px;
     font-weight: 700;
-    color: var(--accent);
+    color: #ffffff;
 }
 
 .hero-price-was {
