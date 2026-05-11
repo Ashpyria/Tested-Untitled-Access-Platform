@@ -43,7 +43,7 @@
                     <?php elseif ($game['is_free']): ?>
                         <a href="/?action=add_to_cart&game_id=<?= $game['id'] ?>" class="btn btn-green btn-sm btn-block">Get Free</a>
                     <?php else: ?>
-<a href="/?action=add_to_cart&game_id=<?= $game['id'] ?>" class="btn btn-green btn-sm btn-block">Add to Cart</a>
+                        <a href="/?action=add_to_cart&game_id=<?= $game['id'] ?>" class="btn btn-green btn-sm btn-block">Add to Cart</a>
                     <?php endif; ?>
                 <?php else: ?>
                     <a href="/?page=login" class="btn btn-outline btn-sm btn-block">Login to Buy</a>
