@@ -1,0 +1,7 @@
+{
+  "permissions": {
+    "allow": [
+      "PowerShell(& \"C:\\\\xampp\\\\mysql\\\\bin\\\\mysql.exe\" -h 127.0.0.1 -P 3307 -u root --password=\"\" -e \"DROP DATABASE IF EXISTS uap_test;\")"
+    ]
+  }
+}
