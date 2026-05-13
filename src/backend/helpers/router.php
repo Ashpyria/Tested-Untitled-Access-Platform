@@ -28,7 +28,7 @@ $models = [
     'community' => ['Community.php', 'Library.php'],
     'cart'      => ['Cart.php'],
     'support'   => ['Support.php'],
-    'game' => ['Game.php', 'Cart.php', 'Community.php'],
+    'game'      => ['Game.php', 'Cart.php', 'Community.php'],
 ];
 
 foreach ($models[$page] ?? [] as $model) {

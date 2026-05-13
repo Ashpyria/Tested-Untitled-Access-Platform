@@ -278,3 +278,647 @@ FROM games WHERE title = 'Sekiro: Shadows Die Twice';
 INSERT IGNORE INTO reviews (user_id, game_id, rating, content)
 SELECT 1, id, 5, 'After 120 hours I still find new things to discover. The modding community keeps this game alive years after release. Absolute classic.'
 FROM games WHERE title = 'Cyberpunk 2077';
+
+-- ============================================================
+-- SEED: Users
+-- Password semua user: seed1234
+-- ============================================================
+
+INSERT IGNORE INTO users (username, email, password, bio, country, role) VALUES
+('riftwalker', 'riftwalker@uap.dev',  '$2y$10$K3MJvxmrSwbyWwucSQIjMObFUx9LmFXnxaevwyAhbseJtuZz6Ip4q', 'Action RPG enthusiast. Lover of challenging combat and deep lore. Souls veteran.', 'Indonesia', 'user'),
+('starforge',  'starforge@uap.dev',   '$2y$10$i5gh4yC2x8d4K5tnGUnU5ulnLp.EIsdm4xb7gSXL6XWpUR/FThsfy', 'Strategy gamer who loves building empires one turn at a time. Civ VI veteran.', 'Malaysia', 'user'),
+('novazen',    'novazen@uap.dev',     '$2y$10$CaAr/yntTfXsyvZbZ/RQgeKZNZeiyPoZZKSIWpKAWrZLgodDft7lu', 'Indie game collector and pixel art enthusiast. Hades is my religion.', 'Singapore', 'user'),
+('pixeldawn',  'pixeldawn@uap.dev',   '$2y$10$CVxfgA19n3.2O2J0sQc8TuU6BMZQk/rmqD1yGD1YX1HUajcDGWaH6', 'Competitive multiplayer player. CS2 and Dota main. Always climbing the ladder.', 'Indonesia', 'user'),
+('ironveil',   'ironveil@uap.dev',    '$2y$10$vcCMRanedEOorVNcSSTS/ukd0a3mAG6G2yOAMek16Z6VCKzmt9xmW', 'RPG veteran. 500+ hours in The Witcher 3 and still going strong.', 'Philippines', 'user'),
+('echobyte',   'echobyte@uap.dev',    '$2y$10$neuGAY5IO4fgQR5cijPHqeWg2GA.GzwFAa6Nw17fRnaCJeSJj.2BW', 'Simulation and sandbox lover. If I can build it, I will. Stardew Valley changed my life.', 'Thailand', 'user');
+
+-- ============================================================
+-- SEED: Achievements
+-- ============================================================
+
+INSERT INTO achievements (name, description, rarity) SELECT 'First Step',       'Purchase your first game on UAP.',                      'Common'    WHERE NOT EXISTS (SELECT 1 FROM achievements WHERE name = 'First Step');
+INSERT INTO achievements (name, description, rarity) SELECT 'Game Collector',   'Own 5 or more games in your library.',                  'Rare'      WHERE NOT EXISTS (SELECT 1 FROM achievements WHERE name = 'Game Collector');
+INSERT INTO achievements (name, description, rarity) SELECT 'Dedicated Gamer',  'Log a total of 10 hours across all games.',             'Common'    WHERE NOT EXISTS (SELECT 1 FROM achievements WHERE name = 'Dedicated Gamer');
+INSERT INTO achievements (name, description, rarity) SELECT 'Weekend Warrior',  'Log a total of 50 hours across all games.',             'Rare'      WHERE NOT EXISTS (SELECT 1 FROM achievements WHERE name = 'Weekend Warrior');
+INSERT INTO achievements (name, description, rarity) SELECT 'Century Club',     'Log a total of 100 hours across all games.',            'Epic'      WHERE NOT EXISTS (SELECT 1 FROM achievements WHERE name = 'Century Club');
+INSERT INTO achievements (name, description, rarity) SELECT 'Legendary Hours',  'Log a total of 500 hours across all games.',            'Legendary' WHERE NOT EXISTS (SELECT 1 FROM achievements WHERE name = 'Legendary Hours');
+INSERT INTO achievements (name, description, rarity) SELECT 'First Review',     'Write your first game review.',                         'Common'    WHERE NOT EXISTS (SELECT 1 FROM achievements WHERE name = 'First Review');
+INSERT INTO achievements (name, description, rarity) SELECT 'Community Voice',  'Write reviews for 3 or more different games.',          'Rare'      WHERE NOT EXISTS (SELECT 1 FROM achievements WHERE name = 'Community Voice');
+INSERT INTO achievements (name, description, rarity) SELECT 'Forum Regular',    'Create your first post in the community.',              'Common'    WHERE NOT EXISTS (SELECT 1 FROM achievements WHERE name = 'Forum Regular');
+INSERT INTO achievements (name, description, rarity) SELECT 'Scholar',          'Publish a guide to help other players.',                 'Rare'      WHERE NOT EXISTS (SELECT 1 FROM achievements WHERE name = 'Scholar');
+INSERT INTO achievements (name, description, rarity) SELECT 'Bargain Hunter',   'Purchase a game that is currently on sale.',            'Common'    WHERE NOT EXISTS (SELECT 1 FROM achievements WHERE name = 'Bargain Hunter');
+INSERT INTO achievements (name, description, rarity) SELECT 'Free Loader',      'Add a free-to-play game to your library.',              'Common'    WHERE NOT EXISTS (SELECT 1 FROM achievements WHERE name = 'Free Loader');
+INSERT INTO achievements (name, description, rarity) SELECT 'Social Butterfly', 'Have 3 or more accepted friends on UAP.',               'Rare'      WHERE NOT EXISTS (SELECT 1 FROM achievements WHERE name = 'Social Butterfly');
+INSERT INTO achievements (name, description, rarity) SELECT 'Early Adopter',    'One of the first players to join the UAP platform.',    'Legendary' WHERE NOT EXISTS (SELECT 1 FROM achievements WHERE name = 'Early Adopter');
+
+-- ============================================================
+-- SEED: Library — riftwalker
+-- ============================================================
+
+INSERT IGNORE INTO library (user_id, game_id, hours_played, is_installed, is_favorite, purchased_at)
+SELECT (SELECT id FROM users WHERE username='riftwalker'), id, 134, 1, 1, DATE_SUB(NOW(), INTERVAL 60 DAY) FROM games WHERE title='God of War';
+
+INSERT IGNORE INTO library (user_id, game_id, hours_played, is_installed, is_favorite, purchased_at)
+SELECT (SELECT id FROM users WHERE username='riftwalker'), id, 210, 1, 1, DATE_SUB(NOW(), INTERVAL 55 DAY) FROM games WHERE title='Elden Ring';
+
+INSERT IGNORE INTO library (user_id, game_id, hours_played, is_installed, is_favorite, purchased_at)
+SELECT (SELECT id FROM users WHERE username='riftwalker'), id,  98, 1, 0, DATE_SUB(NOW(), INTERVAL 40 DAY) FROM games WHERE title='Dark Souls III';
+
+INSERT IGNORE INTO library (user_id, game_id, hours_played, is_installed, is_favorite, purchased_at)
+SELECT (SELECT id FROM users WHERE username='riftwalker'), id,  76, 0, 1, DATE_SUB(NOW(), INTERVAL 30 DAY) FROM games WHERE title='Sekiro: Shadows Die Twice';
+
+INSERT IGNORE INTO library (user_id, game_id, hours_played, is_installed, is_favorite, purchased_at)
+SELECT (SELECT id FROM users WHERE username='riftwalker'), id,  45, 1, 0, DATE_SUB(NOW(), INTERVAL 20 DAY) FROM games WHERE title='Hollow Knight';
+
+INSERT IGNORE INTO library (user_id, game_id, hours_played, is_installed, is_favorite, purchased_at)
+SELECT (SELECT id FROM users WHERE username='riftwalker'), id,  22, 0, 0, DATE_SUB(NOW(), INTERVAL 10 DAY) FROM games WHERE title='Hades';
+
+INSERT IGNORE INTO library (user_id, game_id, hours_played, is_installed, is_favorite, purchased_at)
+SELECT (SELECT id FROM users WHERE username='riftwalker'), id, 180, 1, 0, DATE_SUB(NOW(), INTERVAL  5 DAY) FROM games WHERE title='Grand Theft Auto V';
+
+-- ============================================================
+-- SEED: Library — starforge
+-- ============================================================
+
+INSERT IGNORE INTO library (user_id, game_id, hours_played, is_installed, is_favorite, purchased_at)
+SELECT (SELECT id FROM users WHERE username='starforge'), id, 320, 1, 1, DATE_SUB(NOW(), INTERVAL 90 DAY) FROM games WHERE title='Civilization VI';
+
+INSERT IGNORE INTO library (user_id, game_id, hours_played, is_installed, is_favorite, purchased_at)
+SELECT (SELECT id FROM users WHERE username='starforge'), id, 155, 1, 1, DATE_SUB(NOW(), INTERVAL 70 DAY) FROM games WHERE title='Total War: WARHAMMER III';
+
+INSERT IGNORE INTO library (user_id, game_id, hours_played, is_installed, is_favorite, purchased_at)
+SELECT (SELECT id FROM users WHERE username='starforge'), id,  88, 1, 0, DATE_SUB(NOW(), INTERVAL 50 DAY) FROM games WHERE title='Cyberpunk 2077';
+
+INSERT IGNORE INTO library (user_id, game_id, hours_played, is_installed, is_favorite, purchased_at)
+SELECT (SELECT id FROM users WHERE username='starforge'), id, 230, 1, 1, DATE_SUB(NOW(), INTERVAL 45 DAY) FROM games WHERE title='The Witcher 3: Wild Hunt';
+
+INSERT IGNORE INTO library (user_id, game_id, hours_played, is_installed, is_favorite, purchased_at)
+SELECT (SELECT id FROM users WHERE username='starforge'), id,  60, 0, 0, DATE_SUB(NOW(), INTERVAL 15 DAY) FROM games WHERE title='Disco Elysium';
+
+INSERT IGNORE INTO library (user_id, game_id, hours_played, is_installed, is_favorite, purchased_at)
+SELECT (SELECT id FROM users WHERE username='starforge'), id, 410, 1, 1, DATE_SUB(NOW(), INTERVAL  7 DAY) FROM games WHERE title='Path of Exile';
+
+-- ============================================================
+-- SEED: Library — novazen
+-- ============================================================
+
+INSERT IGNORE INTO library (user_id, game_id, hours_played, is_installed, is_favorite, purchased_at)
+SELECT (SELECT id FROM users WHERE username='novazen'), id, 190, 1, 1, DATE_SUB(NOW(), INTERVAL 80 DAY) FROM games WHERE title='Hades';
+
+INSERT IGNORE INTO library (user_id, game_id, hours_played, is_installed, is_favorite, purchased_at)
+SELECT (SELECT id FROM users WHERE username='novazen'), id, 112, 1, 1, DATE_SUB(NOW(), INTERVAL 60 DAY) FROM games WHERE title='Hollow Knight';
+
+INSERT IGNORE INTO library (user_id, game_id, hours_played, is_installed, is_favorite, purchased_at)
+SELECT (SELECT id FROM users WHERE username='novazen'), id,  55, 1, 0, DATE_SUB(NOW(), INTERVAL 40 DAY) FROM games WHERE title='Celeste';
+
+INSERT IGNORE INTO library (user_id, game_id, hours_played, is_installed, is_favorite, purchased_at)
+SELECT (SELECT id FROM users WHERE username='novazen'), id,  78, 1, 1, DATE_SUB(NOW(), INTERVAL 30 DAY) FROM games WHERE title='Stardew Valley';
+
+INSERT IGNORE INTO library (user_id, game_id, hours_played, is_installed, is_favorite, purchased_at)
+SELECT (SELECT id FROM users WHERE username='novazen'), id,  34, 0, 0, DATE_SUB(NOW(), INTERVAL 14 DAY) FROM games WHERE title='Terraria';
+
+INSERT IGNORE INTO library (user_id, game_id, hours_played, is_installed, is_favorite, purchased_at)
+SELECT (SELECT id FROM users WHERE username='novazen'), id,  95, 1, 0, DATE_SUB(NOW(), INTERVAL  3 DAY) FROM games WHERE title='Dota 2';
+
+-- ============================================================
+-- SEED: Library — pixeldawn
+-- ============================================================
+
+INSERT IGNORE INTO library (user_id, game_id, hours_played, is_installed, is_favorite, purchased_at)
+SELECT (SELECT id FROM users WHERE username='pixeldawn'), id, 560, 1, 1, DATE_SUB(NOW(), INTERVAL 100 DAY) FROM games WHERE title='Counter-Strike 2';
+
+INSERT IGNORE INTO library (user_id, game_id, hours_played, is_installed, is_favorite, purchased_at)
+SELECT (SELECT id FROM users WHERE username='pixeldawn'), id, 340, 1, 1, DATE_SUB(NOW(), INTERVAL  80 DAY) FROM games WHERE title='Dota 2';
+
+INSERT IGNORE INTO library (user_id, game_id, hours_played, is_installed, is_favorite, purchased_at)
+SELECT (SELECT id FROM users WHERE username='pixeldawn'), id, 210, 1, 0, DATE_SUB(NOW(), INTERVAL  60 DAY) FROM games WHERE title='Apex Legends';
+
+INSERT IGNORE INTO library (user_id, game_id, hours_played, is_installed, is_favorite, purchased_at)
+SELECT (SELECT id FROM users WHERE username='pixeldawn'), id,  88, 0, 0, DATE_SUB(NOW(), INTERVAL  30 DAY) FROM games WHERE title='Grand Theft Auto V';
+
+INSERT IGNORE INTO library (user_id, game_id, hours_played, is_installed, is_favorite, purchased_at)
+SELECT (SELECT id FROM users WHERE username='pixeldawn'), id,  42, 1, 0, DATE_SUB(NOW(), INTERVAL  10 DAY) FROM games WHERE title='Among Us';
+
+-- ============================================================
+-- SEED: Library — ironveil
+-- ============================================================
+
+INSERT IGNORE INTO library (user_id, game_id, hours_played, is_installed, is_favorite, purchased_at)
+SELECT (SELECT id FROM users WHERE username='ironveil'), id, 540, 1, 1, DATE_SUB(NOW(), INTERVAL 120 DAY) FROM games WHERE title='The Witcher 3: Wild Hunt';
+
+INSERT IGNORE INTO library (user_id, game_id, hours_played, is_installed, is_favorite, purchased_at)
+SELECT (SELECT id FROM users WHERE username='ironveil'), id, 175, 1, 1, DATE_SUB(NOW(), INTERVAL  90 DAY) FROM games WHERE title='Cyberpunk 2077';
+
+INSERT IGNORE INTO library (user_id, game_id, hours_played, is_installed, is_favorite, purchased_at)
+SELECT (SELECT id FROM users WHERE username='ironveil'), id, 130, 1, 0, DATE_SUB(NOW(), INTERVAL  60 DAY) FROM games WHERE title='Elden Ring';
+
+INSERT IGNORE INTO library (user_id, game_id, hours_played, is_installed, is_favorite, purchased_at)
+SELECT (SELECT id FROM users WHERE username='ironveil'), id,  90, 0, 1, DATE_SUB(NOW(), INTERVAL  40 DAY) FROM games WHERE title='Disco Elysium';
+
+INSERT IGNORE INTO library (user_id, game_id, hours_played, is_installed, is_favorite, purchased_at)
+SELECT (SELECT id FROM users WHERE username='ironveil'), id, 260, 1, 0, DATE_SUB(NOW(), INTERVAL  20 DAY) FROM games WHERE title='Red Dead Redemption 2';
+
+INSERT IGNORE INTO library (user_id, game_id, hours_played, is_installed, is_favorite, purchased_at)
+SELECT (SELECT id FROM users WHERE username='ironveil'), id,  50, 1, 0, DATE_SUB(NOW(), INTERVAL   5 DAY) FROM games WHERE title='Dark Souls III';
+
+-- ============================================================
+-- SEED: Library — echobyte
+-- ============================================================
+
+INSERT IGNORE INTO library (user_id, game_id, hours_played, is_installed, is_favorite, purchased_at)
+SELECT (SELECT id FROM users WHERE username='echobyte'), id, 480, 1, 1, DATE_SUB(NOW(), INTERVAL 110 DAY) FROM games WHERE title='Stardew Valley';
+
+INSERT IGNORE INTO library (user_id, game_id, hours_played, is_installed, is_favorite, purchased_at)
+SELECT (SELECT id FROM users WHERE username='echobyte'), id, 360, 1, 1, DATE_SUB(NOW(), INTERVAL  90 DAY) FROM games WHERE title='Minecraft';
+
+INSERT IGNORE INTO library (user_id, game_id, hours_played, is_installed, is_favorite, purchased_at)
+SELECT (SELECT id FROM users WHERE username='echobyte'), id, 200, 1, 0, DATE_SUB(NOW(), INTERVAL  70 DAY) FROM games WHERE title='Terraria';
+
+INSERT IGNORE INTO library (user_id, game_id, hours_played, is_installed, is_favorite, purchased_at)
+SELECT (SELECT id FROM users WHERE username='echobyte'), id, 145, 0, 1, DATE_SUB(NOW(), INTERVAL  40 DAY) FROM games WHERE title='Civilization VI';
+
+INSERT IGNORE INTO library (user_id, game_id, hours_played, is_installed, is_favorite, purchased_at)
+SELECT (SELECT id FROM users WHERE username='echobyte'), id,  30, 1, 0, DATE_SUB(NOW(), INTERVAL  15 DAY) FROM games WHERE title='Among Us';
+
+-- ============================================================
+-- SEED: Posts
+-- ============================================================
+
+INSERT IGNORE INTO posts (user_id, title, content, category, created_at)
+SELECT (SELECT id FROM users WHERE username='riftwalker'),
+'Elden Ring vs Dark Souls III — which is harder?',
+'After 200+ hours in Elden Ring and 98 hours in DS3, I think DS3 bosses are more mechanically demanding but Elden Ring has harder late game. The open world also lets you overlevel which changes the difficulty curve. What do you all think?',
+'Game Discussion', DATE_SUB(NOW(), INTERVAL 28 DAY)
+FROM DUAL WHERE EXISTS (SELECT 1 FROM users WHERE username='riftwalker');
+
+INSERT IGNORE INTO posts (user_id, title, content, category, created_at)
+SELECT (SELECT id FROM users WHERE username='riftwalker'),
+'My GPU died mid-game — is there a way to recover save data?',
+'My RTX 3070 just died while I was playing God of War. PC restarted. Game progress seems fine but I am worried about corrupted files. Is there any way to back up save data on this platform?',
+'Tech Support', DATE_SUB(NOW(), INTERVAL 14 DAY)
+FROM DUAL WHERE EXISTS (SELECT 1 FROM users WHERE username='riftwalker');
+
+INSERT IGNORE INTO posts (user_id, title, content, category, created_at)
+SELECT (SELECT id FROM users WHERE username='starforge'),
+'Civilization VI — best leader for beginners?',
+'I have been playing Civ VI for 300+ hours and I always get asked this. My answer: Trajan (Rome). Tall playstyle, strong early game, and the automatic monument placement makes district management easy. Who is your beginner pick?',
+'Game Discussion', DATE_SUB(NOW(), INTERVAL 25 DAY)
+FROM DUAL WHERE EXISTS (SELECT 1 FROM users WHERE username='starforge');
+
+INSERT IGNORE INTO posts (user_id, title, content, category, created_at)
+SELECT (SELECT id FROM users WHERE username='starforge'),
+'UAP needs a wishlist feature',
+'Would love to be able to wishlist games and get notified when they go on sale. This is a basic feature on most platforms. Any chance of it coming to UAP?',
+'General', DATE_SUB(NOW(), INTERVAL 10 DAY)
+FROM DUAL WHERE EXISTS (SELECT 1 FROM users WHERE username='starforge');
+
+INSERT IGNORE INTO posts (user_id, title, content, category, created_at)
+SELECT (SELECT id FROM users WHERE username='novazen'),
+'Hades is the best roguelike ever made — change my mind',
+'I have completed 35 escape runs and I still find new dialogue. The way the story progresses through death is genius. Supergiant outdid themselves. No other roguelike comes close for me.',
+'Game Discussion', DATE_SUB(NOW(), INTERVAL 20 DAY)
+FROM DUAL WHERE EXISTS (SELECT 1 FROM users WHERE username='novazen');
+
+INSERT IGNORE INTO posts (user_id, title, content, category, created_at)
+SELECT (SELECT id FROM users WHERE username='novazen'),
+'Hidden gems on UAP — what are you sleeping on?',
+'Most people know God of War and Elden Ring but what about Celeste? A masterpiece that almost no one talks about. The platforming is incredibly tight and the story genuinely moved me. Drop your hidden gem picks below.',
+'General', DATE_SUB(NOW(), INTERVAL  7 DAY)
+FROM DUAL WHERE EXISTS (SELECT 1 FROM users WHERE username='novazen');
+
+INSERT IGNORE INTO posts (user_id, title, content, category, created_at)
+SELECT (SELECT id FROM users WHERE username='pixeldawn'),
+'CS2 tips for new players',
+'After 560 hours I figured I would share what helped me the most: 1) Learn one map at a time. 2) Crosshair placement is everything. 3) Sound is a weapon. 4) Buy pattern matters more than K/D. Good luck out there.',
+'Game Discussion', DATE_SUB(NOW(), INTERVAL 18 DAY)
+FROM DUAL WHERE EXISTS (SELECT 1 FROM users WHERE username='pixeldawn');
+
+INSERT IGNORE INTO posts (user_id, title, content, category, created_at)
+SELECT (SELECT id FROM users WHERE username='ironveil'),
+'The Witcher 3 is still the best RPG after 10 years',
+'I have replayed The Witcher 3 three times now. The writing in Hearts of Stone and Blood and Wine DLCs is better than most full games. CDPR set a bar that almost nobody has cleared since 2015.',
+'Game Discussion', DATE_SUB(NOW(), INTERVAL 22 DAY)
+FROM DUAL WHERE EXISTS (SELECT 1 FROM users WHERE username='ironveil');
+
+INSERT IGNORE INTO posts (user_id, title, content, category, created_at)
+SELECT (SELECT id FROM users WHERE username='echobyte'),
+'Stardew Valley 1.6 — what changed and is it worth revisiting?',
+'The 1.6 update added so much content. New farm type, new events, expanded end game. If you stopped playing before 1.5 or 1.6 you owe it to yourself to come back. Easily another 100 hours.',
+'Game Discussion', DATE_SUB(NOW(), INTERVAL 12 DAY)
+FROM DUAL WHERE EXISTS (SELECT 1 FROM users WHERE username='echobyte');
+
+INSERT IGNORE INTO posts (user_id, title, content, category, created_at)
+SELECT (SELECT id FROM users WHERE username='echobyte'),
+'Looking to trade: Hollow Knight for Celeste',
+'I have a spare Hollow Knight key from a bundle. Looking for someone who has Celeste to swap. DM me if interested.',
+'Trading', DATE_SUB(NOW(), INTERVAL  4 DAY)
+FROM DUAL WHERE EXISTS (SELECT 1 FROM users WHERE username='echobyte');
+
+-- ============================================================
+-- SEED: Reviews
+-- ============================================================
+
+-- riftwalker reviews
+INSERT IGNORE INTO reviews (user_id, game_id, rating, content, created_at)
+SELECT (SELECT id FROM users WHERE username='riftwalker'), id, 5,
+'Peak action game design. Every boss fight in Elden Ring teaches you something. The open world actually works for a souls game and the sense of discovery is unmatched. 210 hours and I have no regrets.',
+DATE_SUB(NOW(), INTERVAL 50 DAY) FROM games WHERE title='Elden Ring';
+
+INSERT IGNORE INTO reviews (user_id, game_id, rating, content, created_at)
+SELECT (SELECT id FROM users WHERE username='riftwalker'), id, 5,
+'Hollow Knight is a masterpiece of art direction and game feel. The combat is precise, the world is hauntingly beautiful, and the lore rewards exploration. One of the best indie games ever made.',
+DATE_SUB(NOW(), INTERVAL 18 DAY) FROM games WHERE title='Hollow Knight';
+
+INSERT IGNORE INTO reviews (user_id, game_id, rating, content, created_at)
+SELECT (SELECT id FROM users WHERE username='riftwalker'), id, 4,
+'Dark Souls III has the best boss roster in the series. Some areas feel rushed but the highs are incredibly high. If you want to understand why people love FromSoftware games, start here.',
+DATE_SUB(NOW(), INTERVAL  9 DAY) FROM games WHERE title='Dark Souls III';
+
+-- starforge reviews
+INSERT IGNORE INTO reviews (user_id, game_id, rating, content, created_at)
+SELECT (SELECT id FROM users WHERE username='starforge'), id, 5,
+'320 hours and still going. Civilization VI rewards creative thinking and punishes passive play. The district system added genuine depth to city building. The best entry point to 4X strategy.',
+DATE_SUB(NOW(), INTERVAL 80 DAY) FROM games WHERE title='Civilization VI';
+
+INSERT IGNORE INTO reviews (user_id, game_id, rating, content, created_at)
+SELECT (SELECT id FROM users WHERE username='starforge'), id, 5,
+'The Witcher 3 is the gold standard of open world RPGs. Every side quest feels hand-crafted. The writing is exceptional, the world reacts to your choices, and the DLC rivals full-price games.',
+DATE_SUB(NOW(), INTERVAL 40 DAY) FROM games WHERE title='The Witcher 3: Wild Hunt';
+
+INSERT IGNORE INTO reviews (user_id, game_id, rating, content, created_at)
+SELECT (SELECT id FROM users WHERE username='starforge'), id, 4,
+'Total War Warhammer III is the most content-rich TW game yet. The variety of factions is incredible. Performance can be rough in big battles but the campaign depth is worth it for strategy fans.',
+DATE_SUB(NOW(), INTERVAL 12 DAY) FROM games WHERE title='Total War: WARHAMMER III';
+
+-- novazen reviews
+INSERT IGNORE INTO reviews (user_id, game_id, rating, content, created_at)
+SELECT (SELECT id FROM users WHERE username='novazen'), id, 5,
+'190 hours in Hades. Every single run is different. The voice acting is world-class, the art is stunning, and the way the narrative is woven into the gameplay loop is just genius. Mandatory play.',
+DATE_SUB(NOW(), INTERVAL 70 DAY) FROM games WHERE title='Hades';
+
+INSERT IGNORE INTO reviews (user_id, game_id, rating, content, created_at)
+SELECT (SELECT id FROM users WHERE username='novazen'), id, 5,
+'Celeste is not just about platforming — it is about mental health, perseverance, and self-acceptance. The gameplay is brutally precise but always fair. One of the most important games of the decade.',
+DATE_SUB(NOW(), INTERVAL 35 DAY) FROM games WHERE title='Celeste';
+
+INSERT IGNORE INTO reviews (user_id, game_id, rating, content, created_at)
+SELECT (SELECT id FROM users WHERE username='novazen'), id, 4,
+'Stardew Valley is pure comfort. Farming, mining, relationships, exploration — it does everything at a pace you control. A one-person dev achievement that put many AAA studios to shame.',
+DATE_SUB(NOW(), INTERVAL 20 DAY) FROM games WHERE title='Stardew Valley';
+
+-- pixeldawn reviews
+INSERT IGNORE INTO reviews (user_id, game_id, rating, content, created_at)
+SELECT (SELECT id FROM users WHERE username='pixeldawn'), id, 5,
+'CS2 is the definitive competitive FPS. The sub-tick server system is a genuine upgrade. Gunplay is perfectly balanced and the skill ceiling is essentially infinite. 560 hours, still learning.',
+DATE_SUB(NOW(), INTERVAL 60 DAY) FROM games WHERE title='Counter-Strike 2';
+
+INSERT IGNORE INTO reviews (user_id, game_id, rating, content, created_at)
+SELECT (SELECT id FROM users WHERE username='pixeldawn'), id, 4,
+'Apex Legends has the best movement system in any battle royale. The ping system changed how teams communicate. Monetization is aggressive but the core game is free and excellent.',
+DATE_SUB(NOW(), INTERVAL 25 DAY) FROM games WHERE title='Apex Legends';
+
+INSERT IGNORE INTO reviews (user_id, game_id, rating, content, created_at)
+SELECT (SELECT id FROM users WHERE username='pixeldawn'), id, 3,
+'Dota 2 is brilliant and brutal. The depth is unmatched in any MOBA but the learning curve will destroy you. Great game if you have friends to play with. Solo queue as a beginner is rough.',
+DATE_SUB(NOW(), INTERVAL  8 DAY) FROM games WHERE title='Dota 2';
+
+-- ironveil reviews
+INSERT IGNORE INTO reviews (user_id, game_id, rating, content, created_at)
+SELECT (SELECT id FROM users WHERE username='ironveil'), id, 5,
+'540 hours in The Witcher 3 and I still notice details I missed before. The world is alive in a way no other RPG has achieved. Geralt is one of gaming''s greatest protagonists. An absolute must-play.',
+DATE_SUB(NOW(), INTERVAL 85 DAY) FROM games WHERE title='The Witcher 3: Wild Hunt';
+
+INSERT IGNORE INTO reviews (user_id, game_id, rating, content, created_at)
+SELECT (SELECT id FROM users WHERE username='ironveil'), id, 5,
+'Disco Elysium is unlike anything else in gaming. It is a novel that plays back. The skill system is creative, the writing is hilarious and profound, and Harry Du Bois is the most memorable RPG character ever written.',
+DATE_SUB(NOW(), INTERVAL 35 DAY) FROM games WHERE title='Disco Elysium';
+
+INSERT IGNORE INTO reviews (user_id, game_id, rating, content, created_at)
+SELECT (SELECT id FROM users WHERE username='ironveil'), id, 5,
+'Red Dead Redemption 2 is the most immersive open world ever made. Arthur Morgan''s story is genuinely moving. The attention to detail is obsessive in the best possible way. Rockstar''s magnum opus.',
+DATE_SUB(NOW(), INTERVAL 15 DAY) FROM games WHERE title='Red Dead Redemption 2';
+
+-- echobyte reviews
+INSERT IGNORE INTO reviews (user_id, game_id, rating, content, created_at)
+SELECT (SELECT id FROM users WHERE username='echobyte'), id, 5,
+'480 hours in Stardew Valley across multiple playthroughs. The game respects your time and rewards patience. ConcernedApe built something magical. Still the best farming sim and it is not close.',
+DATE_SUB(NOW(), INTERVAL 100 DAY) FROM games WHERE title='Stardew Valley';
+
+INSERT IGNORE INTO reviews (user_id, game_id, rating, content, created_at)
+SELECT (SELECT id FROM users WHERE username='echobyte'), id, 5,
+'Minecraft is genuinely infinite. 360 hours and I have barely scratched the surface of what is possible. The modding community extends it further still. A game for all ages and all playstyles.',
+DATE_SUB(NOW(), INTERVAL  55 DAY) FROM games WHERE title='Minecraft';
+
+INSERT IGNORE INTO reviews (user_id, game_id, rating, content, created_at)
+SELECT (SELECT id FROM users WHERE username='echobyte'), id, 4,
+'Terraria packs more content into 200 MB than most 60 GB games. The progression from wood pickaxe to endgame is incredibly satisfying. Best played with a friend but great solo too.',
+DATE_SUB(NOW(), INTERVAL  25 DAY) FROM games WHERE title='Terraria';
+
+-- ============================================================
+-- SEED: Guides
+-- ============================================================
+
+INSERT IGNORE INTO guides (user_id, game_id, title, content, views, created_at)
+SELECT
+    (SELECT id FROM users WHERE username='riftwalker'),
+    (SELECT id FROM games WHERE title='Elden Ring'),
+    'Elden Ring — Complete Beginner Guide (Stats, Weapons, and Survival)',
+'# Elden Ring Beginner Guide
+
+## Choosing Your Class
+For beginners, **Vagabond** is the safest pick. High starting Vigor and Strength means you survive more hits while learning the combat. Avoid Wretch unless you enjoy pain.
+
+## The Most Important Stat: Vigor
+Vigor controls your HP. Always keep Vigor around the same level as your other stats — ideally 40 Vigor before endgame. Dying in one hit is almost always a Vigor problem.
+
+## Weapon Scaling Explained
+Each weapon scales with one or more stats (Str, Dex, Int, Fai, Arc). Match your weapon to your build:
+- **Strength build** → two-hand weapons for 1.5x Strength bonus
+- **Dexterity build** → fast weapons, bleed builds are powerful
+- **Intelligence build** → Glintstone spells, Moonveil Katana
+
+## Survival Tips
+1. Always look for ways around enemies before fighting them
+2. Torrent (your horse) is available in most open-world areas — use him
+3. Stake of Marika respawn points save you running back to bosses
+4. The map reveals itself when you pick up Map Fragments — explore to find them
+5. Grace Sites level you up — never pass one without activating it
+
+## First Boss: Margit the Fell Omen
+- Summon Rogier at the golden sign outside the fog gate
+- Attack during his long combo finishers
+- When he pulls out the golden hammer, dodge backwards twice
+- Margit''s Shackle item (buy from Patches) staggers him twice in phase 1
+
+Good luck, Tarnished.',
+3420, DATE_SUB(NOW(), INTERVAL 45 DAY);
+
+INSERT IGNORE INTO guides (user_id, game_id, title, content, views, created_at)
+SELECT
+    (SELECT id FROM users WHERE username='starforge'),
+    (SELECT id FROM games WHERE title='Civilization VI'),
+    'Civilization VI — How to Win Your First Game on Prince Difficulty',
+'# Winning Your First Civ VI Game
+
+## Pick the Right Leader
+**Trajan (Rome)** is ideal for beginners. His unique ability gives every new city a free monument, which means you get Culture faster without spending Production. Strong all-around with no glaring weaknesses.
+
+## The First 50 Turns
+1. **Scout immediately** — build a Scout before anything else to explore and meet City-States
+2. **Settle on Production tiles** — Hills + Rivers give Production + Housing which you need early
+3. **Build a Slinger → Warrior → Monument** in your capital
+4. **Research Animal Husbandry first** to reveal Horses and Pasture tiles
+5. **Research Bronze Working** to reveal Iron and build Chop improvements
+
+## District Priority
+Build districts in this order for a balanced game:
+1. **Campus** (Science) — research is the backbone of everything
+2. **Commercial Hub** (Gold) — Gold pays for units and city purchases
+3. **Encampment** (Military) — protects against AI aggression around turn 100
+
+## Religion Tips (Optional but Powerful)
+- Build a **Holy Site** in a city with high Faith yields (forest, mountains)
+- Found a religion early to get a powerful Belief bonus
+- **Tithe** (4 Gold per 4 followers) or **Work Ethic** (+Production) are strong Beliefs
+
+## Winning Condition: Science Victory
+Target for beginners:
+1. Research all techs in the modern era
+2. Build Spaceport
+3. Launch Satellite → Moon Landing → Mars Colony in sequence
+4. The AI rarely focuses science, so you should get there first on Prince
+
+Good luck, future world leader.',
+2180, DATE_SUB(NOW(), INTERVAL 38 DAY);
+
+INSERT IGNORE INTO guides (user_id, game_id, title, content, views, created_at)
+SELECT
+    (SELECT id FROM users WHERE username='novazen'),
+    (SELECT id FROM games WHERE title='Hades'),
+    'Hades — Best Boons and Builds for Your First Clear',
+'# Hades First Clear Guide
+
+## Understanding Boons
+Boons are abilities granted by Olympian gods each room. Each god has a theme:
+- **Zeus** → Lightning, chain damage, great for crowds
+- **Poseidon** → Knockback, gold synergies, very good on boss fights
+- **Ares** → Doom (delayed damage), great sustained damage
+- **Athena** → Deflect, defence, survivability
+- **Artemis** → Critical hits, high burst damage
+
+## Best Starter Build: Poseidon + Artemis
+1. Take **Poseidon Special** (flood the area around you on Special)
+2. Grab **Artemis Attack** (chance to Critical)
+3. Look for **Deadly Strike** (raise Critical chance) in later chambers
+4. The **Sea Storm** Duo Boon (Zeus + Poseidon) adds Lightning to every knock-away — devastating
+
+## Escape Tool Priority
+Spend Darkness in the Mirror on:
+1. **Death Defiance** → extra lives (essential)
+2. **Shadow Presence** → bonus damage when exiting a chamber
+3. **Thick Skin** → bonus max HP
+
+## Weapon Recommendation for Beginners
+Start with the **Stygian Blade** (Aspect of Zagreus). It is well-rounded and predictable. Once you are comfortable, try the **Shield of Chaos** which lets you block damage.
+
+## General Tips
+- Charons shop appears every few chambers — save at least 150 gold for a heal
+- Do not skip Wellspring chambers (free HP restore) early on
+- Poms of Power upgrade a random Boon — save them for your best ability
+- Talk to every NPC after every attempt to progress the story
+
+Your first clear will come. Keep going.',
+1850, DATE_SUB(NOW(), INTERVAL 30 DAY);
+
+INSERT IGNORE INTO guides (user_id, game_id, title, content, views, created_at)
+SELECT
+    (SELECT id FROM users WHERE username='ironveil'),
+    (SELECT id FROM games WHERE title='The Witcher 3: Wild Hunt'),
+    'The Witcher 3 — Best Signs Build and Combat Tips',
+'# The Witcher 3 Signs Build Guide
+
+## What is a Signs Build?
+Signs are Geralt''s magical abilities. A Signs build focuses on maximising Sign Intensity to deal massive damage through magic rather than swordplay. It is powerful and visually impressive.
+
+## Core Skills (Max These First)
+From the Signs skill tree:
+- **Igni: Melt Armor** → enemies take more damage after burning
+- **Aard: Aard Sweep** → knock down multiple enemies at once
+- **Axii: Delusion** → works in dialogue to avoid fights and save money
+- **Quen: Active Shield** → absorb damage and heal when the shield breaks
+
+## Gear: Go Full Griffon
+The **Griffon School Gear** set gives a massive bonus to Sign Intensity per piece. Priority:
+1. Collect all Griffon diagrams from notice boards
+2. Upgrade to Enhanced → Superior → Mastercrafted as you level
+3. Use Cat Eyes or Killer Whale decoction for combat bonuses
+
+## Combat Approach
+1. Open with **Quen** (shield) always
+2. Use **Aard** to knock enemies down, then land heavy attacks
+3. Burn armored enemies with **Igni** first
+4. **Yrden** slows Wraiths and ghosts — essential for those fights
+
+## Alchemy Synergy
+Thunderbolt potion (+Critical hit chance) pairs perfectly with Signs. Tawny Owl restores Stamina faster so you can cast more Signs. Always brew potions before hard fights.
+
+Enjoy Toussaint.',
+2640, DATE_SUB(NOW(), INTERVAL 22 DAY);
+
+-- ============================================================
+-- SEED: User Achievements
+-- ============================================================
+
+-- user 1 (assumed existing first user)
+INSERT IGNORE INTO user_achievements (user_id, achievement_id, unlocked_at)
+SELECT 1, id, DATE_SUB(NOW(), INTERVAL 60 DAY) FROM achievements WHERE name='First Step';
+INSERT IGNORE INTO user_achievements (user_id, achievement_id, unlocked_at)
+SELECT 1, id, DATE_SUB(NOW(), INTERVAL 58 DAY) FROM achievements WHERE name='Game Collector';
+INSERT IGNORE INTO user_achievements (user_id, achievement_id, unlocked_at)
+SELECT 1, id, DATE_SUB(NOW(), INTERVAL 55 DAY) FROM achievements WHERE name='Dedicated Gamer';
+INSERT IGNORE INTO user_achievements (user_id, achievement_id, unlocked_at)
+SELECT 1, id, DATE_SUB(NOW(), INTERVAL 50 DAY) FROM achievements WHERE name='Weekend Warrior';
+INSERT IGNORE INTO user_achievements (user_id, achievement_id, unlocked_at)
+SELECT 1, id, DATE_SUB(NOW(), INTERVAL 45 DAY) FROM achievements WHERE name='First Review';
+INSERT IGNORE INTO user_achievements (user_id, achievement_id, unlocked_at)
+SELECT 1, id, DATE_SUB(NOW(), INTERVAL 40 DAY) FROM achievements WHERE name='Forum Regular';
+INSERT IGNORE INTO user_achievements (user_id, achievement_id, unlocked_at)
+SELECT 1, id, DATE_SUB(NOW(), INTERVAL 30 DAY) FROM achievements WHERE name='Early Adopter';
+
+-- riftwalker
+INSERT IGNORE INTO user_achievements (user_id, achievement_id, unlocked_at)
+SELECT (SELECT id FROM users WHERE username='riftwalker'), id, DATE_SUB(NOW(), INTERVAL 59 DAY) FROM achievements WHERE name='First Step';
+INSERT IGNORE INTO user_achievements (user_id, achievement_id, unlocked_at)
+SELECT (SELECT id FROM users WHERE username='riftwalker'), id, DATE_SUB(NOW(), INTERVAL 55 DAY) FROM achievements WHERE name='Game Collector';
+INSERT IGNORE INTO user_achievements (user_id, achievement_id, unlocked_at)
+SELECT (SELECT id FROM users WHERE username='riftwalker'), id, DATE_SUB(NOW(), INTERVAL 50 DAY) FROM achievements WHERE name='Dedicated Gamer';
+INSERT IGNORE INTO user_achievements (user_id, achievement_id, unlocked_at)
+SELECT (SELECT id FROM users WHERE username='riftwalker'), id, DATE_SUB(NOW(), INTERVAL 45 DAY) FROM achievements WHERE name='Weekend Warrior';
+INSERT IGNORE INTO user_achievements (user_id, achievement_id, unlocked_at)
+SELECT (SELECT id FROM users WHERE username='riftwalker'), id, DATE_SUB(NOW(), INTERVAL 40 DAY) FROM achievements WHERE name='Century Club';
+INSERT IGNORE INTO user_achievements (user_id, achievement_id, unlocked_at)
+SELECT (SELECT id FROM users WHERE username='riftwalker'), id, DATE_SUB(NOW(), INTERVAL 30 DAY) FROM achievements WHERE name='First Review';
+INSERT IGNORE INTO user_achievements (user_id, achievement_id, unlocked_at)
+SELECT (SELECT id FROM users WHERE username='riftwalker'), id, DATE_SUB(NOW(), INTERVAL 28 DAY) FROM achievements WHERE name='Community Voice';
+INSERT IGNORE INTO user_achievements (user_id, achievement_id, unlocked_at)
+SELECT (SELECT id FROM users WHERE username='riftwalker'), id, DATE_SUB(NOW(), INTERVAL 28 DAY) FROM achievements WHERE name='Forum Regular';
+INSERT IGNORE INTO user_achievements (user_id, achievement_id, unlocked_at)
+SELECT (SELECT id FROM users WHERE username='riftwalker'), id, DATE_SUB(NOW(), INTERVAL 20 DAY) FROM achievements WHERE name='Bargain Hunter';
+
+-- starforge
+INSERT IGNORE INTO user_achievements (user_id, achievement_id, unlocked_at)
+SELECT (SELECT id FROM users WHERE username='starforge'), id, DATE_SUB(NOW(), INTERVAL 88 DAY) FROM achievements WHERE name='First Step';
+INSERT IGNORE INTO user_achievements (user_id, achievement_id, unlocked_at)
+SELECT (SELECT id FROM users WHERE username='starforge'), id, DATE_SUB(NOW(), INTERVAL 85 DAY) FROM achievements WHERE name='Game Collector';
+INSERT IGNORE INTO user_achievements (user_id, achievement_id, unlocked_at)
+SELECT (SELECT id FROM users WHERE username='starforge'), id, DATE_SUB(NOW(), INTERVAL 80 DAY) FROM achievements WHERE name='Dedicated Gamer';
+INSERT IGNORE INTO user_achievements (user_id, achievement_id, unlocked_at)
+SELECT (SELECT id FROM users WHERE username='starforge'), id, DATE_SUB(NOW(), INTERVAL 75 DAY) FROM achievements WHERE name='Weekend Warrior';
+INSERT IGNORE INTO user_achievements (user_id, achievement_id, unlocked_at)
+SELECT (SELECT id FROM users WHERE username='starforge'), id, DATE_SUB(NOW(), INTERVAL 70 DAY) FROM achievements WHERE name='Century Club';
+INSERT IGNORE INTO user_achievements (user_id, achievement_id, unlocked_at)
+SELECT (SELECT id FROM users WHERE username='starforge'), id, DATE_SUB(NOW(), INTERVAL 60 DAY) FROM achievements WHERE name='Legendary Hours';
+INSERT IGNORE INTO user_achievements (user_id, achievement_id, unlocked_at)
+SELECT (SELECT id FROM users WHERE username='starforge'), id, DATE_SUB(NOW(), INTERVAL 50 DAY) FROM achievements WHERE name='First Review';
+INSERT IGNORE INTO user_achievements (user_id, achievement_id, unlocked_at)
+SELECT (SELECT id FROM users WHERE username='starforge'), id, DATE_SUB(NOW(), INTERVAL 45 DAY) FROM achievements WHERE name='Community Voice';
+INSERT IGNORE INTO user_achievements (user_id, achievement_id, unlocked_at)
+SELECT (SELECT id FROM users WHERE username='starforge'), id, DATE_SUB(NOW(), INTERVAL 40 DAY) FROM achievements WHERE name='Forum Regular';
+INSERT IGNORE INTO user_achievements (user_id, achievement_id, unlocked_at)
+SELECT (SELECT id FROM users WHERE username='starforge'), id, DATE_SUB(NOW(), INTERVAL 38 DAY) FROM achievements WHERE name='Scholar';
+INSERT IGNORE INTO user_achievements (user_id, achievement_id, unlocked_at)
+SELECT (SELECT id FROM users WHERE username='starforge'), id, DATE_SUB(NOW(), INTERVAL 30 DAY) FROM achievements WHERE name='Bargain Hunter';
+INSERT IGNORE INTO user_achievements (user_id, achievement_id, unlocked_at)
+SELECT (SELECT id FROM users WHERE username='starforge'), id, DATE_SUB(NOW(), INTERVAL 20 DAY) FROM achievements WHERE name='Early Adopter';
+
+-- novazen
+INSERT IGNORE INTO user_achievements (user_id, achievement_id, unlocked_at)
+SELECT (SELECT id FROM users WHERE username='novazen'), id, DATE_SUB(NOW(), INTERVAL 78 DAY) FROM achievements WHERE name='First Step';
+INSERT IGNORE INTO user_achievements (user_id, achievement_id, unlocked_at)
+SELECT (SELECT id FROM users WHERE username='novazen'), id, DATE_SUB(NOW(), INTERVAL 75 DAY) FROM achievements WHERE name='Game Collector';
+INSERT IGNORE INTO user_achievements (user_id, achievement_id, unlocked_at)
+SELECT (SELECT id FROM users WHERE username='novazen'), id, DATE_SUB(NOW(), INTERVAL 72 DAY) FROM achievements WHERE name='Dedicated Gamer';
+INSERT IGNORE INTO user_achievements (user_id, achievement_id, unlocked_at)
+SELECT (SELECT id FROM users WHERE username='novazen'), id, DATE_SUB(NOW(), INTERVAL 68 DAY) FROM achievements WHERE name='Weekend Warrior';
+INSERT IGNORE INTO user_achievements (user_id, achievement_id, unlocked_at)
+SELECT (SELECT id FROM users WHERE username='novazen'), id, DATE_SUB(NOW(), INTERVAL 65 DAY) FROM achievements WHERE name='Century Club';
+INSERT IGNORE INTO user_achievements (user_id, achievement_id, unlocked_at)
+SELECT (SELECT id FROM users WHERE username='novazen'), id, DATE_SUB(NOW(), INTERVAL 60 DAY) FROM achievements WHERE name='First Review';
+INSERT IGNORE INTO user_achievements (user_id, achievement_id, unlocked_at)
+SELECT (SELECT id FROM users WHERE username='novazen'), id, DATE_SUB(NOW(), INTERVAL 55 DAY) FROM achievements WHERE name='Community Voice';
+INSERT IGNORE INTO user_achievements (user_id, achievement_id, unlocked_at)
+SELECT (SELECT id FROM users WHERE username='novazen'), id, DATE_SUB(NOW(), INTERVAL 50 DAY) FROM achievements WHERE name='Forum Regular';
+INSERT IGNORE INTO user_achievements (user_id, achievement_id, unlocked_at)
+SELECT (SELECT id FROM users WHERE username='novazen'), id, DATE_SUB(NOW(), INTERVAL 30 DAY) FROM achievements WHERE name='Scholar';
+INSERT IGNORE INTO user_achievements (user_id, achievement_id, unlocked_at)
+SELECT (SELECT id FROM users WHERE username='novazen'), id, DATE_SUB(NOW(), INTERVAL 14 DAY) FROM achievements WHERE name='Free Loader';
+
+-- pixeldawn
+INSERT IGNORE INTO user_achievements (user_id, achievement_id, unlocked_at)
+SELECT (SELECT id FROM users WHERE username='pixeldawn'), id, DATE_SUB(NOW(), INTERVAL 98 DAY) FROM achievements WHERE name='First Step';
+INSERT IGNORE INTO user_achievements (user_id, achievement_id, unlocked_at)
+SELECT (SELECT id FROM users WHERE username='pixeldawn'), id, DATE_SUB(NOW(), INTERVAL 95 DAY) FROM achievements WHERE name='Game Collector';
+INSERT IGNORE INTO user_achievements (user_id, achievement_id, unlocked_at)
+SELECT (SELECT id FROM users WHERE username='pixeldawn'), id, DATE_SUB(NOW(), INTERVAL 90 DAY) FROM achievements WHERE name='Dedicated Gamer';
+INSERT IGNORE INTO user_achievements (user_id, achievement_id, unlocked_at)
+SELECT (SELECT id FROM users WHERE username='pixeldawn'), id, DATE_SUB(NOW(), INTERVAL 85 DAY) FROM achievements WHERE name='Weekend Warrior';
+INSERT IGNORE INTO user_achievements (user_id, achievement_id, unlocked_at)
+SELECT (SELECT id FROM users WHERE username='pixeldawn'), id, DATE_SUB(NOW(), INTERVAL 80 DAY) FROM achievements WHERE name='Century Club';
+INSERT IGNORE INTO user_achievements (user_id, achievement_id, unlocked_at)
+SELECT (SELECT id FROM users WHERE username='pixeldawn'), id, DATE_SUB(NOW(), INTERVAL 75 DAY) FROM achievements WHERE name='Legendary Hours';
+INSERT IGNORE INTO user_achievements (user_id, achievement_id, unlocked_at)
+SELECT (SELECT id FROM users WHERE username='pixeldawn'), id, DATE_SUB(NOW(), INTERVAL 60 DAY) FROM achievements WHERE name='First Review';
+INSERT IGNORE INTO user_achievements (user_id, achievement_id, unlocked_at)
+SELECT (SELECT id FROM users WHERE username='pixeldawn'), id, DATE_SUB(NOW(), INTERVAL 55 DAY) FROM achievements WHERE name='Community Voice';
+INSERT IGNORE INTO user_achievements (user_id, achievement_id, unlocked_at)
+SELECT (SELECT id FROM users WHERE username='pixeldawn'), id, DATE_SUB(NOW(), INTERVAL 18 DAY) FROM achievements WHERE name='Forum Regular';
+INSERT IGNORE INTO user_achievements (user_id, achievement_id, unlocked_at)
+SELECT (SELECT id FROM users WHERE username='pixeldawn'), id, DATE_SUB(NOW(), INTERVAL 10 DAY) FROM achievements WHERE name='Free Loader';
+
+-- ironveil
+INSERT IGNORE INTO user_achievements (user_id, achievement_id, unlocked_at)
+SELECT (SELECT id FROM users WHERE username='ironveil'), id, DATE_SUB(NOW(), INTERVAL 118 DAY) FROM achievements WHERE name='First Step';
+INSERT IGNORE INTO user_achievements (user_id, achievement_id, unlocked_at)
+SELECT (SELECT id FROM users WHERE username='ironveil'), id, DATE_SUB(NOW(), INTERVAL 115 DAY) FROM achievements WHERE name='Game Collector';
+INSERT IGNORE INTO user_achievements (user_id, achievement_id, unlocked_at)
+SELECT (SELECT id FROM users WHERE username='ironveil'), id, DATE_SUB(NOW(), INTERVAL 112 DAY) FROM achievements WHERE name='Dedicated Gamer';
+INSERT IGNORE INTO user_achievements (user_id, achievement_id, unlocked_at)
+SELECT (SELECT id FROM users WHERE username='ironveil'), id, DATE_SUB(NOW(), INTERVAL 110 DAY) FROM achievements WHERE name='Weekend Warrior';
+INSERT IGNORE INTO user_achievements (user_id, achievement_id, unlocked_at)
+SELECT (SELECT id FROM users WHERE username='ironveil'), id, DATE_SUB(NOW(), INTERVAL 108 DAY) FROM achievements WHERE name='Century Club';
+INSERT IGNORE INTO user_achievements (user_id, achievement_id, unlocked_at)
+SELECT (SELECT id FROM users WHERE username='ironveil'), id, DATE_SUB(NOW(), INTERVAL 105 DAY) FROM achievements WHERE name='Legendary Hours';
+INSERT IGNORE INTO user_achievements (user_id, achievement_id, unlocked_at)
+SELECT (SELECT id FROM users WHERE username='ironveil'), id, DATE_SUB(NOW(), INTERVAL  80 DAY) FROM achievements WHERE name='First Review';
+INSERT IGNORE INTO user_achievements (user_id, achievement_id, unlocked_at)
+SELECT (SELECT id FROM users WHERE username='ironveil'), id, DATE_SUB(NOW(), INTERVAL  75 DAY) FROM achievements WHERE name='Community Voice';
+INSERT IGNORE INTO user_achievements (user_id, achievement_id, unlocked_at)
+SELECT (SELECT id FROM users WHERE username='ironveil'), id, DATE_SUB(NOW(), INTERVAL  22 DAY) FROM achievements WHERE name='Forum Regular';
+INSERT IGNORE INTO user_achievements (user_id, achievement_id, unlocked_at)
+SELECT (SELECT id FROM users WHERE username='ironveil'), id, DATE_SUB(NOW(), INTERVAL  22 DAY) FROM achievements WHERE name='Scholar';
+INSERT IGNORE INTO user_achievements (user_id, achievement_id, unlocked_at)
+SELECT (SELECT id FROM users WHERE username='ironveil'), id, DATE_SUB(NOW(), INTERVAL  15 DAY) FROM achievements WHERE name='Early Adopter';
+
+-- echobyte
+INSERT IGNORE INTO user_achievements (user_id, achievement_id, unlocked_at)
+SELECT (SELECT id FROM users WHERE username='echobyte'), id, DATE_SUB(NOW(), INTERVAL 108 DAY) FROM achievements WHERE name='First Step';
+INSERT IGNORE INTO user_achievements (user_id, achievement_id, unlocked_at)
+SELECT (SELECT id FROM users WHERE username='echobyte'), id, DATE_SUB(NOW(), INTERVAL 106 DAY) FROM achievements WHERE name='Game Collector';
+INSERT IGNORE INTO user_achievements (user_id, achievement_id, unlocked_at)
+SELECT (SELECT id FROM users WHERE username='echobyte'), id, DATE_SUB(NOW(), INTERVAL 104 DAY) FROM achievements WHERE name='Dedicated Gamer';
+INSERT IGNORE INTO user_achievements (user_id, achievement_id, unlocked_at)
+SELECT (SELECT id FROM users WHERE username='echobyte'), id, DATE_SUB(NOW(), INTERVAL 102 DAY) FROM achievements WHERE name='Weekend Warrior';
+INSERT IGNORE INTO user_achievements (user_id, achievement_id, unlocked_at)
+SELECT (SELECT id FROM users WHERE username='echobyte'), id, DATE_SUB(NOW(), INTERVAL 100 DAY) FROM achievements WHERE name='Century Club';
+INSERT IGNORE INTO user_achievements (user_id, achievement_id, unlocked_at)
+SELECT (SELECT id FROM users WHERE username='echobyte'), id, DATE_SUB(NOW(), INTERVAL  95 DAY) FROM achievements WHERE name='Legendary Hours';
+INSERT IGNORE INTO user_achievements (user_id, achievement_id, unlocked_at)
+SELECT (SELECT id FROM users WHERE username='echobyte'), id, DATE_SUB(NOW(), INTERVAL  85 DAY) FROM achievements WHERE name='First Review';
+INSERT IGNORE INTO user_achievements (user_id, achievement_id, unlocked_at)
+SELECT (SELECT id FROM users WHERE username='echobyte'), id, DATE_SUB(NOW(), INTERVAL  80 DAY) FROM achievements WHERE name='Community Voice';
+INSERT IGNORE INTO user_achievements (user_id, achievement_id, unlocked_at)
+SELECT (SELECT id FROM users WHERE username='echobyte'), id, DATE_SUB(NOW(), INTERVAL  12 DAY) FROM achievements WHERE name='Forum Regular';
+INSERT IGNORE INTO user_achievements (user_id, achievement_id, unlocked_at)
+SELECT (SELECT id FROM users WHERE username='echobyte'), id, DATE_SUB(NOW(), INTERVAL  12 DAY) FROM achievements WHERE name='Scholar';
+INSERT IGNORE INTO user_achievements (user_id, achievement_id, unlocked_at)
+SELECT (SELECT id FROM users WHERE username='echobyte'), id, DATE_SUB(NOW(), INTERVAL   5 DAY) FROM achievements WHERE name='Bargain Hunter';
