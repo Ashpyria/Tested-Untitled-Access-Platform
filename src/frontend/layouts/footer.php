@@ -31,7 +31,7 @@
             <p class="footer-col-title">Community</p>
             <ul class="footer-links">
                 <li><a href="/?page=community">Feed</a></li>
-                <li><a href="/?page=community&tab=activity">Activity</a></li>
+                <li><a href="/?page=community&tab=guides">Guides</a></li>
                 <li><a href="/?page=community&tab=reviews">Reviews</a></li>
                 <li><a href="/?page=community&tab=guides">Guides</a></li>
             </ul>

@@ -39,7 +39,7 @@ $catColors = [
 </div>
 
 <!-- Expanded form -->
-<div id="compose-form" id="new-post-form" class="comm-compose" style="display:none">
+<div id="compose-form" class="comm-compose" style="display:none">
     <div style="display:flex;align-items:center;gap:10px;margin-bottom:12px">
         <?php if ($cuHasAvatar): ?>
         <img src="/assets/images/avatars/<?= htmlspecialchars($cuAvatar) ?>"

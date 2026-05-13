@@ -2,11 +2,6 @@
 
 require_once __DIR__ . '/../config/database.php';
 
-function getAllGames() {
-    $pdo = getDB();
-    return $pdo->query('SELECT * FROM games ORDER BY created_at DESC')->fetchAll();
-}
-
 function getFeaturedGames() {
     $pdo = getDB();
     return $pdo->query('SELECT * FROM games WHERE is_free = 0 ORDER BY created_at DESC LIMIT 8')->fetchAll();

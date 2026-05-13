@@ -64,16 +64,6 @@ document.addEventListener('DOMContentLoaded', function () {
         if (linkPage === currentPage) link.classList.add('active');
     });
 
-    // Search input — Enter key
-    const searchInput = document.querySelector('.topbar-search-input');
-    if (searchInput) {
-        searchInput.addEventListener('keydown', function (e) {
-            if (e.key === 'Enter' && this.value.trim()) {
-                window.location.href = '/?page=store&search=' + encodeURIComponent(this.value.trim());
-            }
-        });
-    }
-
     // Add to cart / add to wishlist — optional toast feedback
     document.querySelectorAll('[data-toast]').forEach(el => {
         el.addEventListener('click', function () {

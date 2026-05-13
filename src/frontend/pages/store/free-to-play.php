@@ -32,7 +32,7 @@
                         <a href="/?action=add_to_cart&game_id=<?= $game['id'] ?>" class="btn btn-green btn-sm btn-block">Get Free</a>
                     <?php endif; ?>
                 <?php else: ?>
-                    <a href="/?page=login" class="btn btn-outline btn-sm btn-block">Login to Buy</a>
+                        <a href="/?page=login" class="btn btn-outline btn-sm btn-block">Login to Buy</a>
                 <?php endif; ?>
             </div>
         </div>

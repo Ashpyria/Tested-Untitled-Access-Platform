@@ -166,11 +166,10 @@
     align-items: center;
     justify-content: center;
     background: var(--bg-deep);
-    /* Fallback for browsers without aspect-ratio */
     min-height: 0;
 }
 
-/* Legacy fixed height fallback */
+
 @supports not (aspect-ratio: 16/9) {
     .game-card-img { height: 180px; }
 }

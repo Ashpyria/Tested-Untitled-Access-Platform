@@ -7,7 +7,7 @@ if (isLoggedIn() && function_exists('getCartCount')) {
 
 $current_page = $_GET['page'] ?? 'store';
 $store_filter = $_GET['filter'] ?? '';
-$lib_filter   = $_GET['filter'] ?? 'all';
+$lib_filter   = $_GET['tab']    ?? 'all';
 ?>
 <!DOCTYPE html>
 <html lang="id">
@@ -138,15 +138,15 @@ $lib_filter   = $_GET['filter'] ?? 'all';
            class="sidebar-item <?= ($lib_filter === 'all' || $lib_filter === '') ? 'active' : '' ?>">
             All Games
         </a>
-        <a href="/?page=library&filter=favorites"
+        <a href="/?page=library&tab=favorites"
            class="sidebar-item <?= $lib_filter === 'favorites' ? 'active' : '' ?>">
             Favorites
         </a>
-        <a href="/?page=library&filter=installed"
+        <a href="/?page=library&tab=installed"
            class="sidebar-item <?= $lib_filter === 'installed' ? 'active' : '' ?>">
             Installed
         </a>
-        <a href="/?page=library&filter=not-installed"
+        <a href="/?page=library&tab=not-installed"
            class="sidebar-item <?= $lib_filter === 'not-installed' ? 'active' : '' ?>">
             Not Installed
         </a>

@@ -17,7 +17,7 @@
             <a href="/?page=game&id=<?= $game['id'] ?>" style="text-decoration:none">
                 <p class="game-card-title"><?= htmlspecialchars($game['title']) ?></p>
             </a>
-            <p class="game-card-genre"><?= htmlspecialchars($game['genre']) ?></p>
+                <p class="game-card-genre"><?= htmlspecialchars($game['genre']) ?></p>
             <div class="game-card-price">
                 <div>
                     <?php if ($game['is_free']): ?>

@@ -10,9 +10,10 @@ $totalFavorites = getFavoriteCount($user_id);
 $recentGames    = getRecentlyPlayed($user_id, 5);
 
 switch ($tab) {
-    case 'installed': $games = getInstalledGames($user_id);  break;
-    case 'favorites': $games = getFavoriteGames($user_id);   break;
-    default:          $tab = 'all'; $games = getUserLibrary($user_id); break;
+    case 'installed':     $games = getInstalledGames($user_id);    break;
+    case 'not-installed': $games = getNotInstalledGames($user_id); break;
+    case 'favorites':     $games = getFavoriteGames($user_id);     break;
+    default:              $tab = 'all'; $games = getUserLibrary($user_id); break;
 }
 
 if ($search) {
@@ -59,6 +60,8 @@ if ($search) {
        class="lib-tab <?= $tab === 'all' ? 'active' : '' ?>">All Games</a>
     <a href="/?page=library&tab=installed<?= $search ? '&q='.urlencode($search) : '' ?>"
        class="lib-tab <?= $tab === 'installed' ? 'active' : '' ?>">Installed</a>
+    <a href="/?page=library&tab=not-installed<?= $search ? '&q='.urlencode($search) : '' ?>"
+       class="lib-tab <?= $tab === 'not-installed' ? 'active' : '' ?>">Not Installed</a>
     <a href="/?page=library&tab=favorites<?= $search ? '&q='.urlencode($search) : '' ?>"
        class="lib-tab <?= $tab === 'favorites' ? 'active' : '' ?>">Favorites</a>
 </div>
@@ -111,6 +114,7 @@ if ($search) {
         <span class="lib-section-title">
             <?php if ($tab === 'favorites'): ?>Favorites
             <?php elseif ($tab === 'installed'): ?>Installed
+            <?php elseif ($tab === 'not-installed'): ?>Not Installed
             <?php else: ?>All Games<?php endif; ?>
         </span>
         <span class="lib-section-count"><?= count($games) ?> title<?= count($games) != 1 ? 's' : '' ?></span>
@@ -124,6 +128,8 @@ if ($search) {
             <p class="text-secondary">No favorites yet. Click the star on any game.</p>
         <?php elseif ($tab === 'installed'): ?>
             <p class="text-secondary">No games installed.</p>
+        <?php elseif ($tab === 'not-installed'): ?>
+            <p class="text-secondary">All games are installed.</p>
         <?php else: ?>
             <p class="text-secondary">Library kosong. <a href="/?page=store">Browse the Store</a>.</p>
         <?php endif; ?>
