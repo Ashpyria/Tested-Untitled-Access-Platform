@@ -1,29 +1,7 @@
 <?php
 require_once __DIR__ . '/../../../backend/models/Support.php';
 
-// Handle POST before any output
 $ticketError = '';
-if ($_SERVER['REQUEST_METHOD'] === 'POST' && ($_POST['action'] ?? '') === 'send_ticket') {
-    $name     = trim($_POST['ticket_name']     ?? '');
-    $email    = trim($_POST['ticket_email']    ?? '');
-    $category = trim($_POST['ticket_category'] ?? '');
-    $message  = trim($_POST['ticket_message']  ?? '');
-
-    if (empty($name) || empty($email) || empty($category) || empty($message)) {
-        $ticketError = 'All fields are required.';
-    } elseif (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
-        $ticketError = 'Please enter a valid email address.';
-    } else {
-        $uid = isLoggedIn() ? getCurrentUser()['id'] : null;
-        try {
-            createTicket($uid, $name, $email, $category, $message);
-            header('Location: /?page=support&tab=contact&sent=1');
-            exit;
-        } catch (Exception $e) {
-            $ticketError = 'Unable to submit your ticket right now. Please try again later.';
-        }
-    }
-}
 
 $tab = $_GET['tab'] ?? '';
 $q   = trim($_GET['q'] ?? '');
@@ -39,18 +17,24 @@ if ($tab === 'article') {
     try {
         $currentArticle = $artId ? getArticleById($artId) : null;
         if ($currentArticle) incrementArticleViews($artId);
-    } catch (Exception $e) { $currentArticle = null; }
+    } catch (Exception $e) { 
+        $currentArticle = null; 
+    }
 
 } elseif ($tab === 'articles') {
     $artCat = $_GET['cat'] ?? '';
     try {
         $categoryArticles = $artCat ? getArticlesByCategory($artCat) : [];
-    } catch (Exception $e) { $categoryArticles = []; }
+    } catch (Exception $e) { 
+        $categoryArticles = []; 
+    }
 
 } elseif ($tab === '') {
     try {
         $popularArticles = getPopularArticles(5);
-    } catch (Exception $e) { $popularArticles = []; }
+    } catch (Exception $e) { 
+        $popularArticles = []; 
+    }
 }
 
 // Tab active state: article/articles highlight Help Center tab
