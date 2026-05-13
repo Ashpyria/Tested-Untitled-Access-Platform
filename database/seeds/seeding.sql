@@ -1,15 +1,4 @@
 -- ============================================================
--- UAP — Combined Seed File (data saja, tanpa schema)
--- Jalankan SETELAH database dan semua tabel sudah dibuat.
--- Untuk setup lengkap (schema + seed), gunakan database/setup.sql
---
--- Aman dijalankan berulang kali:
--- - INSERT IGNORE dipakai di semua tabel
--- - game_id dan user_id dicari by title/id (tidak hardcoded nomor)
--- - Seed community dilewati otomatis jika user id=1 belum ada
--- ============================================================
-
--- ============================================================
 -- SEED: Games
 -- ============================================================
 

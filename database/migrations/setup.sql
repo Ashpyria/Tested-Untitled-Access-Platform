@@ -1,17 +1,3 @@
--- ============================================================
--- UAP (Untitled Access Platform) — Complete Setup
--- Jalankan file ini untuk setup database dari awal.
--- Sudah mencakup semua schema (migrations) dan data awal (seeds).
---
--- Cara pakai:
---   mysql -h 127.0.0.1 -P 3307 -u root uap_database < setup.sql
--- Atau di phpMyAdmin: Import file ini langsung.
---
--- CATATAN: Seed community (bagian bawah) membutuhkan minimal
--- 1 user terdaftar dengan id = 1. Daftarkan user terlebih dahulu,
--- lalu jalankan ulang bagian seed community, atau sesuaikan user_id.
--- ============================================================
-
 SET FOREIGN_KEY_CHECKS = 0;
 
 -- ============================================================
